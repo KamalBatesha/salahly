@@ -8,22 +8,22 @@ import FormRole from './components/formRole/FormRole'
 
 function App() {
 
-  let router =createBrowserRouter([
-    {
-      path:"/signUp",
-      element:<SignUp/>,
-      children:[
+  let router = createBrowserRouter([
+   {
+      path: "/signUp",
+      element: <SignUp />,
+      children: [
         {
-          index:true,
-          element:<FormInput/>
+          index: true,
+          element: <FormInput />
         },
         {
-          path:"role",
-          element:<FormRole/>
+          path: "role",
+          element: <FormRole />
         }
       ]
-    }
-  ])
+    },
+  ]);
 
   return (
     <UserContextProvider>
