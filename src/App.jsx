@@ -1,22 +1,22 @@
-
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
 import SignUp from './pages/SignUp'
 import UserContextProvider from './context/UserContext'
 import FormInput from './components/formInput/FormInput'
 import FormRole from './components/formRole/FormRole'
-import { AdminDashBoard } from './pages/adminDashBoard'
-import AdminLayout from './components/layout/AdminLayout'
+import { AdminDashBoard } from './pages/Admin/AdminDashBoard'
+import AdminLayout from './components/AdminLayout/AdminLayout'
+import {ProviderDashBoard} from './pages/Provider/ProviderDashBoard'
+import ProviderLayout from './components/ProviderLayout/ProviderLayout'
 
 function App() {
-
   let router = createBrowserRouter([
     {
       path: "/",
       element: (
-        <AdminLayout>
-          <AdminDashBoard />
-        </AdminLayout>
+        <ProviderLayout>
+          <ProviderDashBoard />
+        </ProviderLayout>
       ),
     },
     {
@@ -40,7 +40,15 @@ function App() {
           <AdminDashBoard />
         </AdminLayout>
       ),
-    }
+    },
+    {
+      path: "/providerDashboard",
+      element: (
+         <ProviderLayout>
+          <ProviderDashBoard/>
+        </ProviderLayout>
+      ),
+    },
   ]);
 
   return (
