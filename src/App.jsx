@@ -5,11 +5,21 @@ import SignUp from './pages/SignUp'
 import UserContextProvider from './context/UserContext'
 import FormInput from './components/formInput/FormInput'
 import FormRole from './components/formRole/FormRole'
+import { AdminDashBoard } from './pages/adminDashBoard'
+import AdminLayout from './components/layout/AdminLayout'
 
 function App() {
 
   let router = createBrowserRouter([
-   {
+    {
+      path: "/",
+      element: (
+        <AdminLayout>
+          <AdminDashBoard />
+        </AdminLayout>
+      ),
+    },
+    {
       path: "/signUp",
       element: <SignUp />,
       children: [
@@ -23,6 +33,14 @@ function App() {
         }
       ]
     },
+    {
+      path: "/adminDashboard",
+      element: (
+        <AdminLayout>
+          <AdminDashBoard />
+        </AdminLayout>
+      ),
+    }
   ]);
 
   return (

@@ -55,8 +55,8 @@ export const Sidebar = ({ isOpen }) => {
 
             {/* Logo */}
             <div>
-                <div className="h-20 border-b border-gray-200 flex items-center justify-center p-4">
-                    <img src="/images/logo.png" alt="Logo" className="h-12 object-contain" />
+                <div className="h-18 border-b border-gray-200 flex items-center justify-center p-4">
+                    <img src="/images/logo.png" alt="Logo" className="h-10 object-contain" />
                 </div>
 
                 {/* Main menu */}
@@ -68,7 +68,7 @@ export const Sidebar = ({ isOpen }) => {
             </div>
 
             {/* Bottom menu */}
-            <div className="p-4 border-t border-gray-100">
+            <div className="p-4  border-gray-100">
                 <nav className="space-y-2">
                     {renderMenuItems(bottomMenu)}
                 </nav>
