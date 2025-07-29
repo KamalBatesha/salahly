@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider,Navigate } from 'react-router-dom'
 import './App.css'
 import SignUp from './pages/SignUp'
 import UserContextProvider from './context/UserContext'
@@ -18,6 +18,8 @@ import Rejected from './components/Rejected'
 import Confirmed from './components/Confirmed'
 import Profile from "./pages/Profile";
 import FormRole from './components/formRole/FormRole';
+import MyServices from './pages/MyServices';
+import Messages from './pages/Messages';
 
 function App() {
 
@@ -101,6 +103,26 @@ function App() {
         </AdminLayout>
       ),
     },
+    {
+      path:"/my-services",
+      element:<MyServices />
+    },
+    {
+      path:"/messages",
+      element:<Messages />
+    },
+    {
+      path:"/orders",
+      element:<MyServices />
+    },
+    {
+      path:"/settings",
+      element:<MyServices />
+    },
+    {
+      path:"*",
+      element:<Navigate to="/" replace />
+    }
   ]);
   return (
     <UserContextProvider>
