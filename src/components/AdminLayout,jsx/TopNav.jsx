@@ -1,7 +1,7 @@
 import React from 'react';
 import profileCircle from '../../assets/profile-circle.png';
 
-export const Topav = ({ sidebarOpen, setSidebarOpen }) => {
+export const TopNav = ({ sidebarOpen, setSidebarOpen }) => {
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 p-4" dir="rtl">
       <div className="flex items-center justify-between">

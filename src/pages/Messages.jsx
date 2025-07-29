@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Sidebar } from '../components/AdminLayout,jsx/SideBar';
-import { Topav } from '../components/AdminLayout,jsx/Topav';
+import { TopNav } from '../components/AdminLayout,jsx/TopNav';
 import chatImg from '../assets/chat-img.png';
 
 const Messages = () => {
@@ -94,7 +94,7 @@ const Messages = () => {
       {/* Main Content */}
       <div className={`flex-1 transition-all duration-300 ${sidebarOpen ? 'mr-64' : 'mr-0'}`}>
         {/* Header */}
-        <Topav 
+        <TopNav 
           sidebarOpen={sidebarOpen} 
           setSidebarOpen={setSidebarOpen}
         />
