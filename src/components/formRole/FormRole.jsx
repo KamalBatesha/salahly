@@ -1,8 +1,19 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import user from '../../assets/user.png'
 import provider from '../../assets/provider.png'
+
 function FormRole() {
     let [role, setRole] = useState('user');
+    const navigate = useNavigate();
+
+    const handleContinue = () => {
+        // Save the selected role to localStorage
+        localStorage.setItem('userRole', role);
+        // Navigate to services screen
+        navigate('/services');
+    };
+
   return (
         <div dir='rtl' className='text-right flex flex-col w-full'>
         <h2 className='font-bold text-4xl'>من انت </h2>
@@ -21,7 +32,13 @@ function FormRole() {
             <h3 className='text-4xl font-bold mt-4 font-almarai'>مستخدم</h3>
             </div>
         </div>
-            <button type='submit' className='bg-main-500 text-white rounded-xl px-4 py-3 mt-4 w-full cursor-pointer'>تابع</button>
+            <button 
+                type='button' 
+                onClick={handleContinue}
+                className='bg-main-500 text-white rounded-xl px-4 py-3 mt-4 w-full cursor-pointer'
+            >
+                تابع
+            </button>
         </div>
   )
 }

@@ -1,35 +1,52 @@
-
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import './App.css'
-import SignUp from './pages/SignUp'
-import UserContextProvider from './context/UserContext'
-import FormInput from './components/formInput/FormInput'
-import FormRole from './components/formRole/FormRole'
+// App.jsx
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import './App.css';
+import SignUp from './pages/SignUp';
+import UserContextProvider from './context/UserContext';
+import FormInput from './components/formInput/FormInput';
+import FormRole from './components/formRole/FormRole';
+import MyServices from './pages/MyServices';
+import Messages from './pages/Messages';
 
 function App() {
-
-  let router =createBrowserRouter([
+  const router = createBrowserRouter([
     {
-      path:"/signUp",
-      element:<SignUp/>,
-      children:[
+      path: '/',
+      element: <Navigate to="/signUp" replace />,
+    },
+    {
+      path: '/signUp',
+      element: <SignUp />,
+      children: [
         {
-          index:true,
-          element:<FormInput/>
+          index: true,
+          element: <FormInput />,
         },
         {
-          path:"role",
-          element:<FormRole/>
-        }
-      ]
-    }
-  ])
+          path: 'role',
+          element: <FormRole />,
+        },
+      ],
+    },
+    {
+      path: '/services',
+      element: <MyServices />,
+    },
+    {
+      path: '/messages',
+      element: <Messages />,
+    },
+    {
+      path: '*',
+      element: <Navigate to="/signUp" replace />,
+    },
+  ]);
 
   return (
     <UserContextProvider>
       <RouterProvider router={router} />
     </UserContextProvider>
-  )
+  );
 }
 
-export default App
+export default App;
