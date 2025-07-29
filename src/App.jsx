@@ -8,15 +8,16 @@ import { AdminDashBoard } from './pages/Admin/AdminDashBoard'
 import AdminLayout from './components/AdminLayout/AdminLayout'
 import {ProviderDashBoard} from './pages/Provider/ProviderDashBoard'
 import ProviderLayout from './components/ProviderLayout/ProviderLayout'
+import Providers from './pages/Admin/Providers'
 
 function App() {
   let router = createBrowserRouter([
     {
       path: "/",
       element: (
-        <ProviderLayout>
-          <ProviderDashBoard />
-        </ProviderLayout>
+        <AdminLayout>
+          <AdminDashBoard />
+        </AdminLayout>
       ),
     },
     {
@@ -38,6 +39,14 @@ function App() {
       element: (
         <AdminLayout>
           <AdminDashBoard />
+        </AdminLayout>
+      ),
+    },
+    {
+      path: "/providers",
+      element: (
+         <AdminLayout>
+          <Providers/>
         </AdminLayout>
       ),
     },

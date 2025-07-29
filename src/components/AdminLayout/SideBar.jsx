@@ -7,11 +7,11 @@ export const Sidebar = ({ isOpen }) => {
 
     const mainMenu = [
         { id: 'dashboard', icon: 'home-filled.png', activeIcon: 'home.png', label: 'الرئيسية', path: '/' },
-        { id: 'statistics', icon: 'service-provider-filled.png', activeIcon: 'service-provider.png', label: 'الصنايعية', path: '/provider' },
+        { id: 'statistics', icon: 'service-provider-filled.png', activeIcon: 'service-provider.png', label: 'الصنايعية', path: '/providers' },
         { id: 'students', icon: 'clients-filled.png', activeIcon: 'clients.png', label: 'العملاء', path: '/clients' },
         { id: 'applications', icon: 'menu-board-filled.png', activeIcon: 'menu-board.png', label: 'الطلبات', path: '/orders' },
-        { id: 'reports', icon: 'category-filled.png', activeIcon: 'category.png', label: 'الخدمات', path: '/services' },
-        { id: 'reports', icon: 'profile-filled.png', activeIcon: 'profile.png', label: 'انا', path: '/profile' },
+        { id: 'reports', icon: 'category-filled.png', activeIcon: 'category.png', label: 'تخصص', path: '/services' },
+        { id: 'reports', icon: 'profile-filled.png', activeIcon: 'profile.png', label: 'خدمات', path: '/profile' },
     ];
 
     const bottomMenu = [
@@ -34,7 +34,7 @@ export const Sidebar = ({ isOpen }) => {
                     key={item.id}
                     onClick={() => navigate(item.path)}
                     className={`w-full flex flex-row-reverse items-center gap-3 px-3 py-3 rounded-lg transition-colors text-sm
-                    ${active ? 'bg-[#004AAD] text-white text-xl font-bold' : 'text-[#004AAD] hover:bg-gray-100 font-medium'}`}
+                    ${active ? 'bg-[#004AAD] text-white text-lg font-bold' : 'text-[#004AAD] hover:bg-gray-100 font-medium'}`}
 
                      >
 

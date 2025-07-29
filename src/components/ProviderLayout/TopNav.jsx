@@ -5,7 +5,6 @@ export const TopNav = ({ toggleSidebar, isSidebarOpen }) => {
     return (
         <nav className="bg-white shadow-sm border-b border-gray-200 px-6 py-4 flex items-center justify-between w-full">
 
-            {/* Left: Sidebar Toggle */}
             <div className="flex items-center gap-4">
                 <button
                     onClick={toggleSidebar}
@@ -15,7 +14,6 @@ export const TopNav = ({ toggleSidebar, isSidebarOpen }) => {
                 </button>
             </div>
 
-            {/* Right: User Info */}
             <div className="flex items-center gap-3 ml-4">
                 <img
                     src="/images/avatar.jpg"

@@ -4,7 +4,7 @@ const ProviderCard = ({ provider, onDetailsPress }) => {
     const truncatedAddress = provider.address?.split(' ').slice(0, 2).join(' ') + '...';
 
     return (
-        <div className="flex flex-row bg-white rounded-[15px] overflow-hidden mb-4 shadow-sm border border-gray-300 min-h-[140px] relative">
+        <div className="flex flex-row bg-white rounded-[15px] overflow-hidden mb-5 shadow-sm border border-gray-300 min-h-[130px] relative">
 
             {/* Image + Rating on top right */}
             <div className="relative w-[120px] h-[140px]">
