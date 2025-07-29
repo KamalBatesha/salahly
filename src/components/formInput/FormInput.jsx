@@ -96,7 +96,7 @@ function FormInput() {
 
             <div className='flex gap-1 my-2'>
                 قم بتسجيل الدخول
-                <p> <Link to="/signin" className='text-main-500'>لديك حساب؟ </Link>
+                <p> <Link to="/login" className='text-main-500'>لديك حساب؟ </Link>
                  </p>
             </div>
             <button type='submit' className='bg-main-500 text-white rounded-xl px-4 py-3 mt-4 w-full cursor-pointer'>تابع</button>

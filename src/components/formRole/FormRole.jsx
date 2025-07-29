@@ -1,8 +1,24 @@
 import React, { useState } from 'react'
 import user from '../../assets/user.png'
 import provider from '../../assets/provider.png'
+import { useNavigate } from 'react-router-dom';
 function FormRole() {
+    let navigate=useNavigate();
     let [role, setRole] = useState('user');
+    function handelNext() {
+        let userSignUpData = JSON.parse(localStorage.getItem('userSignUpData'));
+        if(!userSignUpData.name || !userSignUpData.email || !userSignUpData.phone || !userSignUpData.password || !userSignUpData.rePassword || !userSignUpData.address){
+            alert('من فضلك اكمل البيانات');
+            navigate('/signUp');
+        }
+        if (role === 'user') {
+            localStorage.setItem('userSignUpData', JSON.stringify({ ...userSignUpData, role: 'user' }));
+            navigate('/signUp/user');
+        } else {
+            localStorage.setItem('userSignUpData', JSON.stringify({ ...userSignUpData, role: 'provider' }));
+            navigate('/signUp/provider');
+        }
+    }
   return (
         <div dir='rtl' className='text-right flex flex-col w-full'>
         <h2 className='font-bold text-4xl'>من انت </h2>
@@ -21,7 +37,7 @@ function FormRole() {
             <h3 className='text-4xl font-bold mt-4 font-almarai'>مستخدم</h3>
             </div>
         </div>
-            <button type='submit' className='bg-main-500 text-white rounded-xl px-4 py-3 mt-4 w-full cursor-pointer'>تابع</button>
+            <button onClick={handelNext} className='bg-main-500 text-white rounded-xl px-4 py-3 mt-4 w-full cursor-pointer'>تابع</button>
         </div>
   )
 }

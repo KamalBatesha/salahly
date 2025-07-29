@@ -8,7 +8,7 @@ function InputItem(props) {
             onChange={props.handelChange}
             onBlur={props.handelBlur}
             value={props.value}
-            placeholder='em' type={props.type} id={props.name} className='w-full rounded-xl border-2 border-[#D1D1DB] px-4 py-2 mt-1 placeholder:text-[#D1D1DB]'></input>
+            placeholder='em' type={props.type} id={props.name} className={`w-full rounded-xl border-2 border-[#D1D1DB] px-4 py-2 mt-1 placeholder:text-[#D1D1DB] ${props.className}`}></input>
             {props.errors && props.touched ? (
         <div
           className="flex p-0 mb-2 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
