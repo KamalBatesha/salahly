@@ -1,8 +1,6 @@
 // MyServices.jsx
 import React, { useState } from 'react';
 import ServiceCard from '../components/ServiceCard';
-import { Sidebar } from '../components/ProviderLayout/SideBar';
-import { TopNav } from '../components/ProviderLayout/TopNav';
 import EditServiceModal from '../components/EditServiceModal';
 import ServiceDetailsModal from '../components/ServiceDetailsModal';
 import AddServiceButton from '../components/AddServiceButton';
@@ -20,7 +18,6 @@ const MyServices = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
@@ -75,83 +72,61 @@ const MyServices = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50" dir="rtl">
-      {/* Sidebar */}
-      <Sidebar isOpen={sidebarOpen} />
+    <div>
+      {/* Title */}
+      <div className="mb-6">
+        <h2 className="text-3xl font-bold text-main-500">خدماتي</h2>
+      </div>
 
-      {/* Main Content */}
-      <div className={`flex-1 transition-all duration-300 ${sidebarOpen ? 'mr-64' : 'mr-0'}`}>
-        {/* Header */}
-      {/*  <TopNav 
-          sidebarOpen={sidebarOpen} 
-          setSidebarOpen={setSidebarOpen}
-        />*/}
-         <div className="fixed top-0 right-0 z-30 w-full bg-white shadow">
-  <TopNav 
-    sidebarOpen={sidebarOpen} 
-    setSidebarOpen={setSidebarOpen}
-  />
-</div> 
+      {/* Search, Filter, and Add Service - All in One Row */}
+      <div className="flex items-center gap-4 mb-6">
+        <div className="relative flex-1 max-w-md">
+          <input
+            type="text"
+            placeholder="ابحث"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-main-500"
+          />
+          <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        </div>
+        <button className="border-2 border-main-500 text-main-500 px-4 py-2 rounded-lg font-bold hover:bg-main-100 flex items-center gap-2">
+          <i className="fas fa-filter text-sm"></i>
+          فلاتر
+        </button>
+        <AddServiceButton onClick={handleAddService} />
+      </div>
 
+      {/* Services Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {currentServices.map(service => (
+          <ServiceCard key={service.id} service={service} onDetails={handleDetails} onEdit={handleEdit} />
+        ))}
+      </div>
 
-        {/* Page Content */}
-        <div className="p-6">
-          {/* Title */}
-          <div className="mb-6">
-            <h2 className="text-3xl font-bold text-main-500">خدماتي</h2>
-          </div>
-
-          {/* Search, Filter, and Add Service - All in One Row */}
-          <div className="flex items-center gap-4 mb-6">
-            <div className="relative flex-1 max-w-md">
-              <input
-                type="text"
-                placeholder="ابحث"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-main-500"
-              />
-              <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            </div>
-            <button className="border-2 border-main-500 text-main-500 px-4 py-2 rounded-lg font-bold hover:bg-main-100 flex items-center gap-2">
-              <i className="fas fa-filter text-sm"></i>
-              فلاتر
-            </button>
-            <AddServiceButton onClick={handleAddService} />
-          </div>
-
-          {/* Services Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {currentServices.map(service => (
-              <ServiceCard key={service.id} service={service} onDetails={handleDetails} onEdit={handleEdit} />
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-between items-center mt-6">
+          <span className="text-sm text-gray-500">
+            عرض {indexOfFirstService + 1} إلى {Math.min(indexOfLastService, filteredServices.length)} من {filteredServices.length} خدمة
+          </span>
+          <div className="flex items-center gap-2">
+            {[...Array(totalPages)].map((_, idx) => (
+              <button
+                key={idx + 1}
+                onClick={() => handlePageChange(idx + 1)}
+                className={`px-3 py-1 rounded-md border font-bold ${
+                  currentPage === idx + 1
+                    ? 'bg-main-500 text-white'
+                    : 'text-main-500 border-main-500 hover:bg-main-100'
+                }`}
+              >
+                {idx + 1}
+              </button>
             ))}
           </div>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex justify-between items-center mt-6">
-              <span className="text-sm text-gray-500">
-                عرض {indexOfFirstService + 1} إلى {Math.min(indexOfLastService, filteredServices.length)} من {filteredServices.length} خدمة
-              </span>
-              <div className="flex items-center gap-2">
-                {[...Array(totalPages)].map((_, idx) => (
-                  <button
-                    key={idx + 1}
-                    onClick={() => handlePageChange(idx + 1)}
-                    className={`px-3 py-1 rounded-md border font-bold ${
-                      currentPage === idx + 1
-                        ? 'bg-main-500 text-white'
-                        : 'text-main-500 border-main-500 hover:bg-main-100'
-                    }`}
-                  >
-                    {idx + 1}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+      )}
 
       {/* Edit Service Modal */}
       <EditServiceModal

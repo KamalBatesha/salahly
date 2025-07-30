@@ -20,7 +20,8 @@ import Profile from "./pages/Profile";
 import FormRole from './components/formRole/FormRole';
 import MyServices from './pages/MyServices';
 import Messages from './pages/Messages';
-
+import Orders from './pages/Orders';
+import AdminChat from './pages/AdminChat';
 function App() {
 
   let router =createBrowserRouter([
@@ -104,21 +105,42 @@ function App() {
       ),
     },
     {
-      path:"/my-services",
-      element:<MyServices />
+      path: "/my-services",
+      element: (
+        <ProviderLayout>
+          <MyServices />
+          </ProviderLayout>
+      ),
     },
     {
-      path:"/messages",
-      element:<Messages />
+      path: "/messages",
+      element: (
+        <ProviderLayout>
+          <Messages  />
+          </ProviderLayout>
+      ),
     },
-    {
-      path:"/orders",
-      element:<MyServices />
-    },
-    {
-      path:"/settings",
-      element:<MyServices />
-    },
+  
+   {
+    path: "/orders",
+    element: (
+      <AdminLayout>
+        <Orders />
+      </AdminLayout>
+    ),
+  },
+  {
+    path: "/AdminChat",
+    element: (
+      <AdminLayout>
+        <AdminChat />
+      </AdminLayout>
+    ),
+  },
+    // {
+    //   path:"/settings",
+    //   element:<MyServices />
+    // },
     {
       path:"*",
       element:<Navigate to="/" replace />
