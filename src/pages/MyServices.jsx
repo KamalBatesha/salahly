@@ -1,8 +1,8 @@
 // MyServices.jsx
 import React, { useState } from 'react';
 import ServiceCard from '../components/ServiceCard';
-import { Sidebar } from '../components/AdminLayout/SideBar';
-import { TopNav } from '../components/AdminLayout/TopNav';
+import { Sidebar } from '../components/ProviderLayout/SideBar';
+import { TopNav } from '../components/ProviderLayout/TopNav';
 import EditServiceModal from '../components/EditServiceModal';
 import ServiceDetailsModal from '../components/ServiceDetailsModal';
 import AddServiceButton from '../components/AddServiceButton';
@@ -82,16 +82,16 @@ const MyServices = () => {
       {/* Main Content */}
       <div className={`flex-1 transition-all duration-300 ${sidebarOpen ? 'mr-64' : 'mr-0'}`}>
         {/* Header */}
-        <TopNav 
+      {/*  <TopNav 
           sidebarOpen={sidebarOpen} 
           setSidebarOpen={setSidebarOpen}
-        />
-        {/* <div className="fixed top-0 right-0 z-30 w-full bg-white shadow">
+        />*/}
+         <div className="fixed top-0 right-0 z-30 w-full bg-white shadow">
   <TopNav 
     sidebarOpen={sidebarOpen} 
     setSidebarOpen={setSidebarOpen}
   />
-</div> */}
+</div> 
 
 
         {/* Page Content */}

@@ -7,9 +7,10 @@ export const Sidebar = ({ isOpen }) => {
 
     const mainMenu = [
         { id: 'dashboard', icon: 'home-filled.png', activeIcon: 'home.png', label: 'الرئيسية', path: '/' },
-        { id: 'applications', icon: 'menu-board-filled.png', activeIcon: 'menu-board.png', label: 'طلباتى', path: '/orders' },
+        { id: 'applications', icon: 'menu-board-filled.png', activeIcon: 'menu-board.png', label: 'طلباتى' },  
+        // , path: '/orders'
         { id: 'reports', icon: 'category-filled.png', activeIcon: 'category.png', label: 'خدماتى', path: '/services' },
-        { id: 'students', icon: 'message-filled.png', activeIcon: 'message-outline.png', label: 'الرسائل', path: '/clients' },
+        { id: 'students', icon: 'message-filled.png', activeIcon: 'message-outline.png', label: 'الرسائل', path: '/Messages' },
         { id: 'reports', icon: 'profile-filled.png', activeIcon: 'profile.png', label: 'الاعدادات', path: '/profile' },
     ];
 

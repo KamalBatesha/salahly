@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sidebar } from '../components/AdminLayout/SideBar';
+import { Sidebar } from '../components/ProviderLayout/SideBar';
 import { TopNav } from '../components/AdminLayout/TopNav';
 import chatImg from '../assets/chat-img.png';
 

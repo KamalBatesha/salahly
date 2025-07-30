@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AdminSidebar } from '../components/AdminLayout/AdminSidebar';
+import { AdminSidebar } from '../components/AdminLayout/SideBar';
 import { TopNav } from '../components/AdminLayout/TopNav';
 import OrderCard from '../components/OrderCard';
 import OrderDetailsModal from '../components/OrderDetailesModal'; // Make sure this path is correct
