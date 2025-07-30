@@ -1,8 +1,8 @@
 // MyServices.jsx
 import React, { useState } from 'react';
 import ServiceCard from '../components/ServiceCard';
-import { Sidebar } from '../components/AdminLayout,jsx/SideBar';
-import { TopNav } from '../components/AdminLayout,jsx/TopNav';
+import { Sidebar } from '../components/AdminLayout/SideBar';
+import { TopNav } from '../components/AdminLayout/TopNav';
 import EditServiceModal from '../components/EditServiceModal';
 import ServiceDetailsModal from '../components/ServiceDetailsModal';
 import AddServiceButton from '../components/AddServiceButton';
