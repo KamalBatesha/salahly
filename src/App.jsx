@@ -20,6 +20,8 @@ import Profile from "./pages/Profile";
 import FormRole from './components/formRole/FormRole';
 import MyServices from './pages/MyServices';
 import Messages from './pages/Messages';
+import ProviderOrders from './pages/Provider/ProviderOrders'
+import Clients from './pages/Admin/Clients'
 
 function App() {
 
@@ -111,13 +113,29 @@ function App() {
       path:"/messages",
       element:<Messages />
     },
-    {
-      path:"/orders",
-      element:<MyServices />
-    },
+    // {
+    //   path:"/orders",
+    //   element:<MyServices />
+    // },
     {
       path:"/settings",
       element:<MyServices />
+    },
+        {
+      path: "/orders",
+      element: (
+        <ProviderLayout>
+          <ProviderOrders />
+        </ProviderLayout>
+      ),
+    },
+    {
+      path: "/clients",
+      element: (
+        <AdminLayout>
+          <Clients />
+        </AdminLayout>
+      ),
     },
     {
       path:"*",
