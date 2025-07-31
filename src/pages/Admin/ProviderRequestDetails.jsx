@@ -124,25 +124,22 @@ const ProviderRequestDetails = () => {
                 <div className="p-6 bg-white min-h-screen rounded-xl m-8 border-[#E1E1E1] border-1 " dir="rtl">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 ">
                         <div className="flex flex-col gap-4 mt-2">
-                            <div className="flex items-start mb-2 rounded-xl border-1  border-[#E1E1E1] p-4 h-[370px] ">
+                            <div className="flex items-start mb-2 rounded-xl border-1 border-[#E1E1E1] p-4 h-[370px]">
                                 <img
                                     src={requestData.avatar}
                                     alt={requestData.name}
                                     className="w-12 h-12 rounded-full object-cover me-2"
                                 />
-                                <div className="flex-1">
+                                <div className="flex-1 text-right">
                                     <h3 className="text-lg font-bold mb-1">{requestData.name}</h3>
-
                                     <span className="inline-block text-xs text-[#0C9D61] bg-[#E6F7F0] rounded-lg px-2 py-1 mb-4">
                                         {requestData.category}
                                     </span>
-
-                                    <div className="flex justify-between text-right text-base mb-3 mt-2">
+                                    <div className="flex justify-between text-base mb-3 mt-2">
                                         <p className="text-black">العنوان: {requestData.address}</p>
                                         <p className="text-black">البريد: {requestData.email}</p>
                                     </div>
                                     <p className="text-black mt-4">رقم الهاتف: {requestData.phone}</p>
-
                                     <p className="text-black mt-6 leading-relaxed">
                                         نبذه : Lorem ipsum dolor sit amet consectetur. Venenatis in urna et non e feugiat id faucibus tellus. Lectus tellus sit integer metus sit. A et arcu diam vestibulum dignissim volutpat phasellus lacus risus. Faucibus aliquam risus lectus mauris lacinia ac pellentesque eleifend vitae. Dignissim dui morbi eleifend lorem.
                                     </p>

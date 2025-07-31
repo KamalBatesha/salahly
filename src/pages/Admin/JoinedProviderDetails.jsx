@@ -53,7 +53,7 @@ const JoinedProviderDetails = () => {
         <>
             <div>
                 <div className="flex justify-between items-end">
-                    <div className="flex items-center gap-2 mr-4">
+                    <div className="flex items-center gap-2 mr-8">
                         <h2 className="text-xl font-bold">الصنايعيه</h2>
                         <img src="images/icons/Vector.png" alt="" className='w-2 h-3 mt-2' />
                         <h2 className="text-xl font-bold">{providerData.name}</h2>

@@ -286,7 +286,7 @@ const Providers = () => {
                                         e.stopPropagation();
                                         handleProviderDetails(item);
                                     }}
-                                    className="w-full text-center px-4 py-2 text-sm  rounded-lg hover:bg-gray-100"
+                                    className="w-full text-center px-4 py-2 text-sm  rounded-lg"
                                 >
                                     عرض التفاصيل
                                 </button>
@@ -331,7 +331,7 @@ const Providers = () => {
 
     return (
         <div className="p-5" dir="rtl">
-            <h4 className='font-bold mb-3 text-lg'>الصنايعيه</h4>
+            <h4 className='font-semibold mb-3 text-xl mr-4'>الصنايعيه</h4>
 
             <div className="rounded-lg  p-4 mb-4">
                 <div className="flex items-center justify-between">
