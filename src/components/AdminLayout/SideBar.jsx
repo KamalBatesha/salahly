@@ -6,7 +6,7 @@ export const Sidebar = ({ isOpen }) => {
     const location = useLocation();
 
     const mainMenu = [
-        { id: 'dashboard', icon: 'home-filled.png', activeIcon: 'home.png', label: 'الرئيسية', path: '/' },
+        { id: 'dashboard', icon: 'home-filled.png', activeIcon: 'home.png', label: 'الرئيسية', path: '/adminDashboard' },
         { id: 'statistics', icon: 'service-provider-filled.png', activeIcon: 'service-provider.png', label: 'الصنايعية', path: '/providers' },
         { id: 'students', icon: 'clients-filled.png', activeIcon: 'clients.png', label: 'العملاء', path: '/clients' },
         { id: 'applications', icon: 'menu-board-filled.png', activeIcon: 'menu-board.png', label: 'الطلبات', path: '/orders' },

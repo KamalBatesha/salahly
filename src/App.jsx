@@ -20,6 +20,8 @@ import Profile from "./pages/Profile";
 import FormRole from './components/formRole/FormRole';
 import MyServices from './pages/MyServices';
 import Messages from './pages/Messages';
+import JoinedProviderDetails from './pages/Admin/JoinedProviderDetails'
+import ProviderRequestDetails from './pages/Admin/ProviderRequestDetails'
 
 function App() {
 
@@ -93,6 +95,22 @@ function App() {
          <ProviderLayout>
           <ProviderDashBoard/>
         </ProviderLayout>
+      ),
+    },
+   {
+      path: "/joinedProviderDetails",
+      element: (
+         <AdminLayout>
+          <JoinedProviderDetails/>
+        </AdminLayout>
+      ),
+    },
+     {
+      path: "/providerRequestDetails",
+      element: (
+         <AdminLayout>
+          <ProviderRequestDetails/>
+        </AdminLayout>
       ),
     },
     {
