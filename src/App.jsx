@@ -22,7 +22,9 @@ import MyServices from './pages/MyServices';
 import Messages from './pages/Messages';
 import ProviderOrders from './pages/Provider/ProviderOrders'
 import Clients from './pages/Admin/Clients'
+import Categories from './pages/Admin/Categories'
 import AdminCategory from './pages/AdminCategory';
+
 
 function App() {
 
@@ -122,7 +124,7 @@ function App() {
       path:"/settings",
       element:<MyServices />
     },
-        {
+    {
       path: "/orders",
       element: (
         <ProviderLayout>
@@ -135,6 +137,14 @@ function App() {
       element: (
         <AdminLayout>
           <Clients />
+        </AdminLayout>
+      ),
+    },
+    {
+      path: "/categories",
+      element: (
+        <AdminLayout>
+          <Categories />
         </AdminLayout>
       ),
     },
