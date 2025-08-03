@@ -20,12 +20,9 @@ import Profile from "./pages/Profile";
 import FormRole from './components/formRole/FormRole';
 import MyServices from './pages/MyServices';
 import Messages from './pages/Messages';
-<<<<<<< HEAD
-import AdminCategory from './pages/AdminCategory'
-=======
 import ProviderOrders from './pages/Provider/ProviderOrders'
 import Clients from './pages/Admin/Clients'
->>>>>>> origin/ProviderOrders-AdminClients
+import AdminCategory from './pages/AdminCategory';
 
 function App() {
 

@@ -20,7 +20,9 @@ function AdminCategory() {
         getCategories()
     }, [])
   return (
-    <div>AdminCategory</div>
+    <div>
+        
+    </div>
   )
 }
 
