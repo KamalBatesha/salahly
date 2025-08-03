@@ -4,38 +4,85 @@ import { createContext, useEffect, useState } from "react";
 
 export let UserContext = createContext();
 export default function UserContextProvider(props) {
-  let [user, setUser] = useState(localStorage.getItem("userName"));
-  let [token, setToken] = useState(localStorage.getItem("token"));
+  let [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo")));
+  let [token, setToken] = useState(localStorage.getItem("access_token"));
   let [userId, setUserId] = useState(getUserId);
+  let [userRole, setUserRole] = useState(getUserRole);
+  console.log(userRole);
+  
 
   function getUserId() {
-    if (localStorage.getItem("token")) {
-      let data = jwtDecode(localStorage.getItem("token"));
+    if (localStorage.getItem("access_token")||token) {
+      let data = jwtDecode(localStorage.getItem("access_token")||token);
       return data.id;
     } else {
       return null;
     }
   }
+  console.log("getUserId",getUserId());
+  
+  function getUserRole() {
+    if (localStorage.getItem("access_token")||localStorage.getItem("refresh_token")) {
+      let data = jwtDecode(localStorage.getItem("access_token")||localStorage.getItem("refresh_token"));
+      return data.role;
+    } else {
+      return null;
+    }
+  }
+
+  async function getUserInfo(){
+    console.log(userRole,token);
+    console.log(`${userRole=="user"?"bearer":"admin"} ${token}`);
+    
+    
+    await axios.get(`http://localhost:3000/user/getMyProfile`,{headers:{'authorization': `${userRole=="user"?"bearer":"admin"} ${token}`}}).then((res) => {
+      console.log(res.data);
+      setUserInfo(res.data);
+      localStorage.setItem("userInfo", JSON.stringify(res.data));
+      return res.data
+    }).catch((err) => {
+      console.log(err);
+    })
+
+  }
+  async function refreshToken(){
+    console.log(`${userRole=="user"?"bearer":"admin"} ${localStorage.getItem("refresh_token")}`);
+    
+    await axios.post('http://localhost:3000/auth/refreshToken',{},{headers:{'authorization': `${userRole=="user"?"bearer":"admin"} ${localStorage.getItem("refresh_token")}`}}).then((res) => {
+      console.log(res.data);
+      localStorage.setItem("access_token", res.data.access_token);
+      setToken(res.data.access_token);
+      return res.data
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
 
   useEffect(() => {
-    // if (
-    //   localStorage.getItem("userName") != null &&
-    //   localStorage.getItem("token") != null
-    // ) {
-    //   setUser(localStorage.getItem("userName"));
-    //   setToken(localStorage.getItem("token"));
-    // }
-  }, []);
+    if (
+      token && getUserId()
+    ) {
+      setUserRole(getUserRole());
+      setUserInfo(getUserInfo());
+      setUserId(getUserId());
+    }else{
+      refreshToken();
+    }
+  }, [token]);
   return (
     <UserContext.Provider
       value={{
-        user,
-        setUser,
+        userInfo,
+        setUserInfo,
         token,
         setToken,
         getUserId,
         userId,
         setUserId,
+        getUserRole,
+        userRole,
+        getUserInfo,
+        setUserRole
 
       }}
     >

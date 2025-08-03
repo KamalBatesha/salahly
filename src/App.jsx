@@ -20,6 +20,7 @@ import Profile from "./pages/Profile";
 import FormRole from './components/formRole/FormRole';
 import MyServices from './pages/MyServices';
 import Messages from './pages/Messages';
+import AdminCategory from './pages/AdminCategory'
 
 function App() {
 
@@ -118,6 +119,12 @@ function App() {
     {
       path:"/settings",
       element:<MyServices />
+    },
+    {
+      path:"/services",
+      element:<AdminLayout>
+        <AdminCategory/>
+      </AdminLayout>
     },
     {
       path:"*",

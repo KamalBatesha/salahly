@@ -27,6 +27,8 @@ function Confirmed() {
       console.log(res.data);
       setLoader(false);
     }).catch((err) => {
+      console.log(err);
+      
       setIsError(true);
       setLoader(false);
 

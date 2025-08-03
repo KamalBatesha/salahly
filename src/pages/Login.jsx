@@ -1,13 +1,15 @@
 import { useFormik } from 'formik';
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import * as Yup from "yup";
 import InputItem from '../components/InputItem';
 import FormImage from '../components/FormImage/FormImage';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { UserContext } from '../context/UserContext';
 
 function Login() {
+  let {token,setToken}=useContext(UserContext);
   const navigate = useNavigate();
     let validationSchema = Yup.object().shape({
     email: Yup.string(),
@@ -20,8 +22,9 @@ function Login() {
 
       await axios.post('http://localhost:3000/auth/signIn', values).then((res) => {
         console.log(res.data);
-        localStorage.setItem("refresh_token", JSON.stringify(res.data.refresh_token));
-        localStorage.setItem("access_token", JSON.stringify(res.data.access_token));
+        localStorage.setItem("refresh_token", res.data.refresh_token);
+        localStorage.setItem("access_token", res.data.access_token);
+        setToken(res.data.access_token);
         navigate('/');
       })
     }catch(err){
