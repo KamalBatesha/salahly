@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider,Navigate } from 'react-router-dom'
 import './App.css'
 import SignUp from './pages/SignUp'
-import UserContextProvider from './context/UserContext'
+import UserContextProvider, { UserContext } from './context/UserContext'
 import FormInput from './components/formInput/FormInput'
 import { AdminDashBoard } from './pages/Admin/AdminDashBoard'
 import AdminLayout from './components/AdminLayout/AdminLayout'
@@ -20,23 +20,26 @@ import Profile from "./pages/Profile";
 import FormRole from './components/formRole/FormRole';
 import MyServices from './pages/MyServices';
 import Messages from './pages/Messages';
+import Orders from './pages/Orders';
+import AdminChat from './pages/AdminChat';
 import ProviderOrders from './pages/Provider/ProviderOrders'
 import Clients from './pages/Admin/Clients'
 import Categories from './pages/Admin/Categories'
-import AdminCategory from './pages/AdminCategory';
+import { useContext } from 'react'
+
 
 
 function App() {
+  // let {userRole,token}=useContext(UserContext)
+// console.log(userRole,token);
+let userRole="admin";
+const userTypes={
+  admin:"admin",
+  provider:"provider",
+  user:"user"
+}
 
   let router =createBrowserRouter([
-    {
-      path: "/",
-      element: (
-        <AdminLayout>
-          <AdminDashBoard />
-        </AdminLayout>
-      ),
-    },
     {
       path:"/signUp",
       element:<SignUp/>,
@@ -77,93 +80,126 @@ function App() {
       ]
     },
     {
-      path: "/adminDashboard",
-      element: (
-        <AdminLayout>
+      path: "/",
+      element:
+
+        userRole==userTypes.admin? (
+          <AdminLayout>
           <AdminDashBoard />
-        </AdminLayout>
-      ),
+          </AdminLayout>
+        ):
+        userRole==userTypes.provider? (
+          <ProviderLayout>
+            <ProviderDashBoard/>
+          </ProviderLayout>
+        ):<h1>user Home</h1>
     },
+    // {
+    //   path: "/adminDashboard",
+    //   element: (
+    //     <AdminLayout>
+    //       <AdminDashBoard />
+    //     </AdminLayout>
+    //   ),
+    // },
     {
       path: "/providers",
-      element: (
+      element:userRole==userTypes.admin? (
          <AdminLayout>
           <Providers/>
         </AdminLayout>
-      ),
+      ):<Navigate to="/" replace />,
     },
-    {
-      path: "/providerDashboard",
-      element: (
-         <ProviderLayout>
-          <ProviderDashBoard/>
-        </ProviderLayout>
-      ),
-    },
+    // {
+    //   path: "/providerDashboard",
+    //   element: (
+    //      <ProviderLayout>
+    //       <ProviderDashBoard/>
+    //     </ProviderLayout>
+    //   ),
+    // },
     {
       path: "/profile",
-      element: (
-        <AdminLayout>
+      element: userRole==userTypes.provider? (
+        <ProviderLayout>
           <Profile />
+        </ProviderLayout>
+      ):<Navigate to="/" replace />,
+    },
+    {
+      path: "/services",
+      element: userRole==userTypes.provider?(
+        <ProviderLayout>
+          <MyServices />
+          </ProviderLayout>
+      ):<Navigate to="/" replace />,
+    },
+    {
+      path: "/messages",
+      element: userRole==userTypes.provider? (
+        <ProviderLayout>
+          <Messages  />
+          </ProviderLayout>
+      ):userRole==userTypes.admin? (
+        <AdminLayout>
+          <AdminChat />
         </AdminLayout>
-      ),
-    },
-    {
-      path:"/my-services",
-      element:<MyServices />
-    },
-    {
-      path:"/messages",
-      element:<Messages />
+      ):<h1>user chat</h1>,
     },
     // {
     //   path:"/orders",
     //   element:<MyServices />
     // },
     {
-      path:"/settings",
-      element:<MyServices />
-    },
-    {
-      path: "/orders",
-      element: (
-        <ProviderLayout>
-          <ProviderOrders />
-        </ProviderLayout>
-      ),
-    },
-    {
-      path: "/clients",
-      element: (
-        <AdminLayout>
-          <Clients />
-        </AdminLayout>
-      ),
-    },
-    {
-      path: "/categories",
-      element: (
-        <AdminLayout>
-          <Categories />
-        </AdminLayout>
-      ),
-    },
-    {
-      path:"/services",
-      element:<AdminLayout>
-        <AdminCategory/>
+    path: "/orders",
+    element: userRole==userTypes.admin? (
+      <AdminLayout>
+        <Orders />
       </AdminLayout>
-    },
+    ):userRole==userTypes.provider? (
+      <ProviderLayout>
+        <ProviderOrders />
+      </ProviderLayout>
+    ):<h1> user orders </h1>,
+  },
+  {
+    path:"/categories",
+    element:userRole==userTypes.admin? (
+      <AdminLayout>
+        <Categories />
+      </AdminLayout>
+    ):<Navigate to="/" replace />
+  },
+  {
+    path:"/clients",
+    element: userRole==userTypes.admin? (
+      <AdminLayout>
+        <Clients/>
+        </AdminLayout>
+    ):<Navigate to="/" replace />
+  },
+  // {
+  //   path: "/ProviderOrders",
+  //   element: (
+  //     <ProviderLayout>
+  //       <ProviderOrders />
+  //     </ProviderLayout>
+  //     )
+  // },
+    // {
+    //   path:"/settings",
+    //   element:<MyServices />
+    // },
     {
       path:"*",
       element:<Navigate to="/" replace />
     }
   ]);
   return (
-    <UserContextProvider>
+    // <UserContextProvider>
       <RouterProvider router={router} />
-      <Toaster/>
-    </UserContextProvider>
+      // {/* <Toaster/> */}
+    // {/* </UserContextProvider> */}
   );
 }
 

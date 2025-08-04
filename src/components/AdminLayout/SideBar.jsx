@@ -12,6 +12,8 @@ export const Sidebar = ({ isOpen }) => {
         { id: 'applications', icon: 'menu-board-filled.png', activeIcon: 'menu-board.png', label: 'الطلبات', path: '/orders' },
         { id: 'reports', icon: 'category-filled.png', activeIcon: 'category.png', label: 'تخصص', path: '/categories' },
         { id: 'reports', icon: 'profile-filled.png', activeIcon: 'profile.png', label: 'خدمات', path: '/profile' },
+        { id: 'students', icon: 'message-filled.png', activeIcon: 'message-outline.png', label: 'الرسائل', path: '/messages' },
+
     ];
 
     const bottomMenu = [

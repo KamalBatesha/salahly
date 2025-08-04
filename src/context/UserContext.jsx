@@ -1,6 +1,7 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { createContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export let UserContext = createContext();
 export default function UserContextProvider(props) {
@@ -32,23 +33,29 @@ export default function UserContextProvider(props) {
 
   async function getUserInfo(){
     console.log(userRole,token);
-    console.log(`${userRole=="user"?"bearer":"admin"} ${token}`);
+    console.log(`${userRole=="admin"?"admin":"bearer"} ${token}`);
     
     
-    await axios.get(`http://localhost:3000/user/getMyProfile`,{headers:{'authorization': `${userRole=="user"?"bearer":"admin"} ${token}`}}).then((res) => {
+    await axios.get(`http://localhost:3000/user/getMyProfile`,{headers:{'authorization': `${userRole=="admin"?"admin":"bearer"} ${token}`}}).then((res) => {
       console.log(res.data);
       setUserInfo(res.data);
       localStorage.setItem("userInfo", JSON.stringify(res.data));
       return res.data
     }).catch((err) => {
       console.log(err);
+      console.log(err.response.data.message);
+      if(err.response.data.message=="jwt expired"){
+        refreshToken();
+      }else{
+        toast.error(err.response.data.message);
+      }
     })
 
   }
   async function refreshToken(){
-    console.log(`${userRole=="user"?"bearer":"admin"} ${localStorage.getItem("refresh_token")}`);
+    console.log(`${userRole=="admin"?"admin":"bearer"} ${localStorage.getItem("refresh_token")}`);
     
-    await axios.post('http://localhost:3000/auth/refreshToken',{},{headers:{'authorization': `${userRole=="user"?"bearer":"admin"} ${localStorage.getItem("refresh_token")}`}}).then((res) => {
+    await axios.post('http://localhost:3000/auth/refreshToken',{},{headers:{'authorization': `${userRole=="admin"?"admin":"bearer"} ${localStorage.getItem("refresh_token")}`}}).then((res) => {
       console.log(res.data);
       localStorage.setItem("access_token", res.data.access_token);
       setToken(res.data.access_token);
