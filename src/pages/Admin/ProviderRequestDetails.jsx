@@ -7,7 +7,6 @@ const services = [
         avatar: '/images/avatar.jpg',
         title: 'تنظيف المنازل',
         priceRange: '500-600',
-        provider: 'شركة الراحة',
         rating: 4.9,
         reviews: '(22)',
     },
@@ -17,7 +16,7 @@ const services = [
         title: 'صيانة كهرباء',
         priceRange: '400-700',
         rating: 4.7,
-        reviews: '(15)',
+        reviews: '(51)',
     },
 ];
 

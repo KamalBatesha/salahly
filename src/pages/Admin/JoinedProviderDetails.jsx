@@ -9,7 +9,6 @@ const services = [
         avatar: '/images/avatar.jpg',
         title: 'تنظيف المنازل',
         priceRange: '500-600',
-        provider: 'شركة الراحة',
         rating: 4.9,
         reviews: '(45)',
     },
