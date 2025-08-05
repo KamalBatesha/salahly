@@ -26,13 +26,14 @@ import ProviderOrders from './pages/Provider/ProviderOrders'
 import Clients from './pages/Admin/Clients'
 import Categories from './pages/Admin/Categories'
 import { useContext } from 'react'
+import AboutUs from './pages/AboutUs'
 
 
 
 function App() {
   // let {userRole,token}=useContext(UserContext)
 // console.log(userRole,token);
-let userRole="admin";
+let userRole="provider";
 const userTypes={
   admin:"admin",
   provider:"provider",
@@ -190,6 +191,10 @@ const userTypes={
     //   path:"/settings",
     //   element:<MyServices />
     // },
+    {
+      path:"/aboutUs",
+      element:<AboutUs/>
+    },
     {
       path:"*",
       element:<Navigate to="/" replace />
