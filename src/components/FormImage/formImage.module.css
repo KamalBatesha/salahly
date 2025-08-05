@@ -1,0 +1,7 @@
+.formImage{
+    background: linear-gradient(rgba(0, 74, 173, 0.7), rgba(0, 74, 173, 0.7)), url('../../assets/formImage.jpg') no-repeat 20% center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}

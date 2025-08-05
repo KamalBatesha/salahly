@@ -1,0 +1,20 @@
+ @import "tailwindcss";
+@import "@fortawesome/fontawesome-free/css/all.css";
+@theme {
+  --color-main-500: #004AAD;
+  --color-main-100: #B0C7E6;
+}
+.font-almarai {
+  font-family: "Almarai", sans-serif;
+}
+:root {
+  --color-main-500: #004AAD;
+  --color-main-100: #B0C7E6;
+  --color-main-200: #E6EDF7; /* lighter variant */
+  --color-main-300: #C0D3EB; /* another lighter shade */
+}
+
+/* Custom font class using Almarai */
+.font-almarai {
+  font-family: "Almarai", sans-serif;
+}
