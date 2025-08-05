@@ -137,7 +137,11 @@ const userTypes={
         <ProviderLayout>
           <MyServices />
           </ProviderLayout>
-      ):<Navigate to="/" replace />,
+      ): userRole==userTypes.admin?(
+        <AdminLayout>
+          <AdminServices/>
+        </AdminLayout>
+      ):<Navigate to="/" replace />
     },
     {
       path: "/messages",
