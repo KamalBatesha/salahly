@@ -27,6 +27,8 @@ import Clients from './pages/Admin/Clients'
 import Categories from './pages/Admin/Categories'
 import { useContext } from 'react'
 import AboutUs from './pages/AboutUs'
+import JoinedProviderDetails from './pages/Admin/JoinedProviderDetails'
+import ProviderRequestDetails from './pages/Admin/ProviderRequestDetails'
 
 
 

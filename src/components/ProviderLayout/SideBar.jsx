@@ -6,7 +6,7 @@ export const Sidebar = ({ isOpen }) => {
     const location = useLocation();
 
     const mainMenu = [
-        { id: 'dashboard', icon: 'home-filled.png', activeIcon: 'home.png', label: 'الرئيسية', path: '/' },
+        { id: 'dashboard', icon: 'home-filled.png', activeIcon: 'home.png', label: 'الرئيسية', path: '/providerDashboard' },
         { id: 'applications', icon: 'menu-board-filled.png', activeIcon: 'menu-board.png', label: 'طلباتى', path: '/orders' },
         { id: 'reports', icon: 'category-filled.png', activeIcon: 'category.png', label: 'خدماتى', path: '/services' },
         { id: 'students', icon: 'message-filled.png', activeIcon: 'message-outline.png', label: 'الرسائل', path: '/messages' },
@@ -35,7 +35,7 @@ export const Sidebar = ({ isOpen }) => {
                     className={`w-full flex flex-row-reverse items-center gap-3 px-3 py-3 rounded-lg transition-colors text-sm
                     ${active ? 'bg-[#004AAD] text-white text-xl font-bold' : 'text-[#004AAD] hover:bg-gray-100 font-medium'}`}
 
-                     >
+                >
 
                     <span className="text-right w-full">{item.label}</span>
                     <img

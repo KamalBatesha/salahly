@@ -209,7 +209,7 @@ export const ProviderDashBoard = () => {
                                     orientation="right"
                                     axisLine={{ stroke: 'white' }}
                                     tickLine={{ stroke: 'white' }}
-                                    tick={{ dy: -7 }}
+                                    tick={{ dx: 30, dy: -9 }}
                                     width={80}
                                 />
                                 <Tooltip

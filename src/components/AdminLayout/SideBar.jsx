@@ -6,14 +6,13 @@ export const Sidebar = ({ isOpen }) => {
     const location = useLocation();
 
     const mainMenu = [
-        { id: 'dashboard', icon: 'home-filled.png', activeIcon: 'home.png', label: 'الرئيسية', path: '/' },
+        { id: 'dashboard', icon: 'home-filled.png', activeIcon: 'home.png', label: 'الرئيسية', path: '/adminDashboard' },
         { id: 'statistics', icon: 'service-provider-filled.png', activeIcon: 'service-provider.png', label: 'الصنايعية', path: '/providers' },
         { id: 'students', icon: 'clients-filled.png', activeIcon: 'clients.png', label: 'العملاء', path: '/clients' },
         { id: 'applications', icon: 'menu-board-filled.png', activeIcon: 'menu-board.png', label: 'الطلبات', path: '/orders' },
-        { id: 'reports', icon: 'category-filled.png', activeIcon: 'category.png', label: 'تخصص', path: '/categories' },
-        { id: 'reports', icon: 'profile-filled.png', activeIcon: 'profile.png', label: 'خدمات', path: '/profile' },
-        { id: 'students', icon: 'message-filled.png', activeIcon: 'message-outline.png', label: 'الرسائل', path: '/messages' },
-
+        { id: 'reports', icon: 'category-filled.png', activeIcon: 'category.png', label: 'تخصص', path: '/services' },
+        { id: 'reports', icon: 'services.png', activeIcon: 'services-outline.png', label: 'خدمات', path: '/profile' },
+        { id: 'reports', icon: 'message-filled.png', activeIcon: 'message-outline.png', label: 'الرسائل', path: '/AdminChat' },
     ];
 
     const bottomMenu = [
@@ -22,11 +21,19 @@ export const Sidebar = ({ isOpen }) => {
     ];
 
     const isActive = (path) => {
-        if (path === '/' && (location.pathname === '/' || location.pathname === '/AdminDashBoard')) {
+        if (path === '/adminDashboard' && (location.pathname === '/' || location.pathname === '/adminDashboard')) {
             return true;
         }
+
+        if (path === '/providers') {
+            return location.pathname === '/providers' ||
+                location.pathname === '/providerRequestDetails' ||
+                location.pathname === '/joinedProviderDetails';
+        }
+
         return location.pathname === path;
     };
+
 
     const renderMenuItems = (items) => (
         items.map((item) => {
@@ -38,7 +45,7 @@ export const Sidebar = ({ isOpen }) => {
                     className={`w-full flex flex-row-reverse items-center gap-3 px-3 py-3 rounded-lg transition-colors text-sm
                     ${active ? 'bg-[#004AAD] text-white text-lg font-bold' : 'text-[#004AAD] hover:bg-gray-100 font-medium'}`}
 
-                     >
+                >
 
                     <span className="text-right w-full">{item.label}</span>
                     <img
