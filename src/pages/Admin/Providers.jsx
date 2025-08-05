@@ -10,208 +10,206 @@ const Providers = () => {
     const [selectedProviders, setSelectedProviders] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const [providers, setProviders] = useState([
+    const defaultProviders = [
         {
             id: 1,
-            name: 'محمد أحمد الشيخ',
-            email: 'provider@email.com',
-            phone: '0123456789',
-            joinDate: '22-5-2025',
-            category: 'صيانة',
-            services: '65',
-            avatar: 'images/avatar.jpg',
-            address: 'شارع 23, القاهرة'
+            name: 'محمد علي',
+            email: 'mohamed@example.com',
+            phone: '01012345678',
+            joinDate: '2024-10-01',
+            category: 'كهرباء',
+            services: '3',
+            avatar: '/images/avatar.jpg',
+            address: 'القاهرة'
         },
         {
             id: 2,
-            name: 'أحمد محمد الشيخ',
-            email: 'provider@email.com',
-            phone: '0123456789',
-            joinDate: '22-5-2025',
-            category: 'كهرباء',
-            services: '30',
-            avatar: 'images/icons/provider.jpg',
-            address: 'شارع 45, الإسكندرية'
+            name: 'أحمد حسن',
+            email: 'ahmed@example.com',
+            phone: '01098765432',
+            joinDate: '2024-10-03',
+            category: 'سباكه',
+            services: '5',
+            avatar: '/images/avatar.jpg',
+            address: 'الجيزة'
         },
         {
             id: 3,
-            name: 'علي محمد الشيخ',
-            email: 'provider@email.com',
-            phone: '0123456789',
-            joinDate: '22-5-2025',
-            category: 'نقاشه',
-            services: '15',
-            avatar: 'images/avatar.jpg',
-            address: 'شارع 12, الجيزة'
+            name: 'سعيد محمود',
+            email: 'saeed@example.com',
+            phone: '01011112222',
+            joinDate: '2024-10-05',
+            category: 'نجاره',
+            services: '2',
+            avatar: '/images/avatar.jpg',
+            address: 'الإسكندرية'
         },
         {
             id: 4,
-            name: 'محمد علي الشيخ',
-            email: 'provider@email.com',
-            phone: '0123456789',
-            joinDate: '22-5-2025',
-            category: 'سباكه',
-            services: '20',
-            avatar: 'images/icons/provider.jpg',
-            address: 'شارع 67, المنصورة'
+            name: 'مروان فاروق',
+            email: 'marwan@example.com',
+            phone: '01022223333',
+            joinDate: '2024-10-07',
+            category: 'صيانة',
+            services: '4',
+            avatar: '/images/avatar.jpg',
+            address: 'طنطا'
+        }
+    ];
+
+    const [providers, setProviders] = useState(() => {
+        const savedProviders = localStorage.getItem('providers');
+        return savedProviders ? JSON.parse(savedProviders) : defaultProviders;
+    });
+
+
+
+    const defaultJoinRequests = [
+        {
+            id: 101,
+            name: 'إبراهيم شوقي',
+            email: 'ibrahim@example.com',
+            phone: '01110001100',
+            requestDate: '2024-10-10',
+            category: 'نقاشه',
+            avatar: '/images/avatar.jpg',
+            address: 'أسوان',
+            action: 'المعلقه'
         },
         {
-            id: 5,
-            name: 'أحمد علي الشيخ',
-            email: 'provider@email.com',
-            phone: '0123456789',
-            joinDate: '22-5-2025',
-            category: 'نقاشه',
-            services: '10',
-            avatar: 'images/avatar.jpg',
-            address: 'شارع 89, طنطا'
+            id: 102,
+            name: 'نبيل عبد الله',
+            email: 'lamiya@example.com',
+            phone: '01220002200',
+            requestDate: '2024-10-12',
+            category: 'كهرباء',
+            avatar: '/images/avatar.jpg',
+            address: 'المنصورة',
+            action: 'المعلقه'
         },
-    ]);
+        {
+            id: 103,
+            name: 'ياسر منصور',
+            email: 'yasser@example.com',
+            phone: '01130003300',
+            requestDate: '2024-10-14',
+            category: 'صيانة',
+            avatar: '/images/avatar.jpg',
+            address: 'سوهاج',
+            action: 'المعلقه'
+        },
+        {
+            id: 104,
+            name: 'ياسر نبيل',
+            email: 'yasser@example.com',
+            phone: '01240004400',
+            requestDate: '2024-10-16',
+            category: 'سباكه',
+            avatar: '/images/avatar.jpg',
+            address: 'بني سويف',
+            action: 'المعلقه'
+        }
+    ];
 
     const [joinRequests, setJoinRequests] = useState(() => {
         const savedRequests = localStorage.getItem('joinRequests');
         if (savedRequests) {
-            return JSON.parse(savedRequests);
+            const requests = JSON.parse(savedRequests);
+            const existingEmails = requests.map(r => r.email);
+            const combined = [
+                ...requests,
+                ...defaultJoinRequests.filter(r => !existingEmails.includes(r.email))
+            ];
+            return combined.filter(r => r.action === 'المعلقه');
         }
-        return [
-            {
-                id: 1,
-                name: 'محمد أحمد الشيخ',
-                email: 'provider@email.com',
-                phone: '0123456789',
-                status: 'قيد المراجعة',
-                requestDate: '22-5-2025',
-                category: 'نقاشه',
-                action: 'المعلقه',
-                avatar: 'images/avatar.jpg',
-                address: 'شارع 15, القاهرة'
-            },
-            {
-                id: 2,
-                name: 'أحمد محمد الشيخ',
-                email: 'provider@email.com',
-                phone: '0123456789',
-                status: 'قيد المراجعة',
-                requestDate: '22-5-2025',
-                category: 'كهرباء',
-                action: 'المعلقه',
-                avatar: 'images/icons/provider.jpg',
-                address: 'شارع 78, الإسكندرية'
-            },
-            {
-                id: 3,
-                name: 'علي محمد الشيخ',
-                email: 'provider@email.com',
-                phone: '0123456789',
-                status: 'مقبول',
-                requestDate: '22-5-2025',
-                category: 'نقاشه',
-                action: 'قبول',
-                avatar: 'images/avatar.jpg',
-                address: 'شارع 34, الجيزة'
-            },
-            {
-                id: 4,
-                name: 'محمد علي الشيخ',
-                email: 'provider@email.com',
-                phone: '0123456789',
-                status: 'مرفوض',
-                requestDate: '22-5-2025',
-                category: 'نجاره',
-                action: 'رفض',
-                avatar: 'images/icons/provider.jpg',
-                address: 'شارع 90, المنيا'
-            },
-            {
-                id: 5,
-                name: 'أحمد علي الشيخ',
-                email: 'provider@email.com',
-                phone: '0123456789',
-                status: 'قيد المراجعة',
-                requestDate: '22-5-2025',
-                category: 'سباكه',
-                action: 'المعلقه',
-                avatar: 'images/avatar.jpg',
-                address: 'شارع 56, أسوان'
-            },
-        ];
+        return defaultJoinRequests;
     });
 
+
     useEffect(() => {
-        const reloadJoinRequests = () => {
+        const reloadData = () => {
+            const savedProviders = localStorage.getItem('providers');
+            if (savedProviders) {
+                setProviders(JSON.parse(savedProviders));
+            }
+
             const savedRequests = localStorage.getItem('joinRequests');
             if (savedRequests) {
-                setJoinRequests(JSON.parse(savedRequests));
+                const requests = JSON.parse(savedRequests);
+
+                // ✅ Only keep requests with action === 'المعلقه'
+                const filteredRequests = requests.filter(req => req.action === 'المعلقه');
+                setJoinRequests(filteredRequests);
             }
         };
+        reloadData();
+        window.addEventListener('focus', reloadData);
 
-        reloadJoinRequests();
+        // 🔽 Add this to listen to custom "dataUpdated" events
+        const handleDataUpdated = (e) => {
+            if (e.detail?.type === 'provider_rejected' || e.detail?.type === 'provider_accepted') {
+                reloadData();
+            }
+        };
+        window.addEventListener('dataUpdated', handleDataUpdated);
 
-        window.addEventListener('focus', reloadJoinRequests);
-        
         return () => {
-            window.removeEventListener('focus', reloadJoinRequests);
+            window.removeEventListener('focus', reloadData);
+            window.removeEventListener('dataUpdated', handleDataUpdated);
         };
     }, []);
 
+
     useEffect(() => {
-        localStorage.setItem('joinRequests', JSON.stringify(joinRequests));
+        localStorage.setItem('providers', JSON.stringify(providers));
+    }, [providers]);
+
+
+
+    useEffect(() => {
+        const allRequests = localStorage.getItem('joinRequests');
+        if (allRequests) {
+            const requests = JSON.parse(allRequests);
+            const nonPending = requests.filter(request => request.action !== 'المعلقه');
+            const updated = [...nonPending, ...joinRequests];
+            localStorage.setItem('joinRequests', JSON.stringify(updated));
+        }
     }, [joinRequests]);
 
     const handleCheckboxChange = (id) => {
         setSelectedProviders(prev =>
-            prev.includes(id)
-                ? prev.filter(providerId => providerId !== id)
-                : [...prev, id]
+            prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]
         );
     };
 
     const handleSelectAll = () => {
         const currentData = activeTab === 'registered' ? filteredProviders : filteredJoinRequests;
-        if (selectedProviders.length === currentData.length) {
-            setSelectedProviders([]);
-        } else {
-            setSelectedProviders(currentData.map(item => item.id));
-        }
+        setSelectedProviders(
+            selectedProviders.length === currentData.length ? [] : currentData.map(p => p.id)
+        );
     };
 
     const getCategoryIcon = (category) => {
-        switch (category) {
-            case 'صيانة':
-                return <img src="/images/icons/flat.png" alt="صيانة" className="w-6 h-6" />;
-            case 'كهرباء':
-                return <img src="/images/icons/flashlight.png" alt="كهرباء" className="w-6 h-6" />;
-            case 'نجاره':
-                return <img src="/images/icons/flat.png" alt="نجاره" className="w-6 h-6 " />;
-            case 'سباكه':
-                return <img src="/images/icons/pipe-wrench.png" alt="سباكه" className="w-6 h-6" />;
-            case 'نقاشه':
-                return <img src="/images/icons/brush.png" alt="نقاشه" className="w-6 h-6" />;
-            default:
-                return <img src="/images/icons/flat.png" alt="مزود" className="w-6 h-6" />;
-        }
+        const icons = {
+            'صيانة': '/images/icons/flat.png',
+            'كهرباء': '/images/icons/flashlight.png',
+            'نجاره': '/images/icons/flat.png',
+            'سباكه': '/images/icons/pipe-wrench.png',
+            'نقاشه': '/images/icons/brush.png',
+        };
+        return <img src={icons[category] || '/images/icons/flat.png'} alt={category} className="w-6 h-6" />;
     };
 
-    const getCategoryColor = (category) => {
-        switch (category) {
-            case 'نقاشه':
-                return 'bg-[#E6EDF7] w-18 h-8 ';
-            case 'كهرباء':
-                return 'bg-[#E6EDF7] w-18 h-8';
-            case 'نجاره':
-                return 'bg-[#E6EDF7] w-18 h-8';
-            case 'سباكه':
-                return 'bg-[#E6EDF7] w-18 h-8';
-            default:
-                return 'bg-[#E6EDF7] w-18 h-8';
-        }
-    };
+    const getCategoryColor = () => 'bg-[#E6EDF7] w-18 h-8';
 
     const handleDelete = (id) => {
         if (window.confirm('هل أنت متأكد من حذف هذا المزود؟')) {
-            setProviders(providers.filter(provider => provider.id !== id));
+            const updated = providers.filter(p => p.id !== id);
+            setProviders(updated);
+            localStorage.setItem('providers', JSON.stringify(updated));
         }
     };
+
 
     const handleEdit = (id) => {
         alert(`تعديل المزود رقم ${id}`);
@@ -229,20 +227,18 @@ const Providers = () => {
 
     const handleProviderDetails = (provider) => {
         localStorage.setItem('selectedProviderData', JSON.stringify(provider));
-        console.log('Navigate to provider details via dots button:', provider);
         navigate(`/joinedProviderDetails`);
         setOpenDropdown(null);
     };
 
     const handleRequestDetails = (request) => {
         localStorage.setItem('selectedRequestData', JSON.stringify(request));
-        console.log('Navigate to request details via button:', request);
         navigate(`/providerRequestDetails`);
     };
 
     const toggleDropdown = (e, itemId) => {
         e.stopPropagation();
-        setOpenDropdown(prev => prev === itemId ? null : itemId);
+        setOpenDropdown(prev => (prev === itemId ? null : itemId));
     };
 
     const filteredProviders = providers.filter(provider =>
@@ -275,7 +271,7 @@ const Providers = () => {
                     <div className="relative">
                         <button
                             onClick={(e) => toggleDropdown(e, item.id)}
-                            className="bg-white text-[#596375] rounded-lg shadow-xs border border-[#E0E4EE] p-2"
+                            className="bg-white text-[#596375] rounded-lg shadow-xs border border-[#E0E4EE] p-2 cursor-pointer hover:bg-gray-50 transition-colors"
                         >
                             <img src="/images/icons/dots.png" alt="خيارات" className="w-4 h-4" />
                         </button>
@@ -286,7 +282,7 @@ const Providers = () => {
                                         e.stopPropagation();
                                         handleProviderDetails(item);
                                     }}
-                                    className="w-full text-center px-4 py-2 text-sm  rounded-lg"
+                                    className="w-full text-center px-4 py-2 text-sm rounded-lg cursor-pointer hover:bg-[#003a8c] transition-colors"
                                 >
                                     عرض التفاصيل
                                 </button>
@@ -299,7 +295,7 @@ const Providers = () => {
                             e.stopPropagation();
                             handleEdit(item.id);
                         }}
-                        className="bg-white text-[#596375] rounded-lg shadow-xs border border-[#E0E4EE] p-2 "
+                        className="bg-white text-[#596375] rounded-lg shadow-xs border border-[#E0E4EE] p-2 cursor-pointer hover:bg-gray-50 transition-colors"
                     >
                         <img src="/images/icons/Edit.png" alt="تعديل" className="w-4 h-4" />
                     </button>
@@ -309,7 +305,7 @@ const Providers = () => {
                             e.stopPropagation();
                             handleDelete(item.id);
                         }}
-                        className="bg-white text-[#596375] rounded-lg shadow-xs border border-[#E0E4EE] p-2 "
+                        className="bg-white text-[#596375] rounded-lg shadow-xs border border-[#E0E4EE] p-2 cursor-pointer hover:bg-red-50 transition-colors"
                     >
                         <img src="/images/icons/Delete.png" alt="حذف" className="w-4 h-4" />
                     </button>
@@ -318,67 +314,57 @@ const Providers = () => {
         }
     };
 
-    React.useEffect(() => {
-        const handleClickOutside = () => {
-            setOpenDropdown(null);
-        };
-
-        document.addEventListener('click', handleClickOutside);
-        return () => {
-            document.removeEventListener('click', handleClickOutside);
-        };
-    }, []);
-
     return (
-        <div className="p-5" dir="rtl">
-            <h4 className='font-semibold mb-3 text-xl mr-4'>الصنايعيه</h4>
+        <div>
+            {/* Page Title */}
+            <div className="mb-6">
+                <h1 className="text-2xl font-bold text-gray-900 text-right mr-3">الصنايعيه</h1>
+            </div>
+            {/* Header Tabs and Search */}
+            <div className="flex gap-1 justify-between mr-2">
+                <div className="relative">
+                    <button
+                        onClick={() => setActiveTab('registered')}
+                        className={`px-20 py-2 text-sm font-semibold transition-colors rounded-lg ${activeTab === 'registered'
+                            ? 'text-white bg-[#004AAD] border border-[#004AAD]'
+                            : 'text-[#B0B0B0] font-semibold hover:text-gray-700 bg-white shadow-inner'
+                            }`}
+                    >
+                        المسجلين
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('requests')}
+                        className={`px-20 py-2 text-sm font-semibold transition-colors rounded-l-lg border-r-0 ${activeTab === 'requests'
+                            ? 'text-white bg-[#004AAD] border border-[#004AAD]'
+                            : 'text-[#B0B0B0] font-semibold hover:text-gray-700 bg-white shadow-inner'
+                            }`}
+                    >
+                        طلبات انضمام
+                    </button>
+                </div>
 
-            <div className="rounded-lg  p-4 mb-4">
-                <div className="flex items-center justify-between">
-                    <div className="flex">
-                        <button
-                            onClick={() => setActiveTab('registered')}
-                            className={`px-20 py-2 text-sm font-semibold transition-colors rounded-lg ${activeTab === 'registered'
-                                ? 'text-white bg-[#004AAD] border border-[#004AAD]'
-                                : 'text-[#B0B0B0] font-semibold hover:text-gray-700 bg-white shadow-inner'
-                                }`}
-                        >
-                            المسجلين
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('requests')}
-                            className={`px-20 py-2 text-sm font-semibold transition-colors rounded-l-lg border-r-0 ${activeTab === 'requests'
-                                ? 'text-white bg-[#004AAD] border border-[#004AAD]'
-                                : 'text-[#B0B0B0] font-semibold hover:text-gray-700 bg-white shadow-inner'
-                                }`}
-                        >
-                            طلبات انضمام
-                        </button>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <div className="relative bg-white rounded-xl border border-[#EBECED]">
-                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none ">
-                                <Search className="h-5 w-5 text-gray-400" />
-                            </div>
-                            <input
-                                type="text"
-                                placeholder="ابحث..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="block w-80 pr-10 border border-gray-300 rounded-lg py-2 px-3 text-right focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
-                            />
+                <div className="flex items-center gap-3">
+                    <div className="relative bg-white rounded-xl border border-[#EBECED]">
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none ">
+                            <Search className="h-5 w-5 text-gray-400" />
                         </div>
-                        <button className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-[#EBECED] text-gray-400 bg-white hover:bg-gray-50 transition-colors">
-                            <img src="/images/icons/filter.png" alt="فلتر" className="w-4 h-4 object-contain mt-1" />
-                            فلتر
-                        </button>
+                        <input
+                            type="text"
+                            placeholder="ابحث..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="block w-80 pr-10 border border-gray-300 rounded-lg py-2 px-3 text-right focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+                        />
                     </div>
+                    <button className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-[#EBECED] text-gray-400 bg-white hover:bg-gray-50 transition-colors">
+                        <img src="/images/icons/filter.png" alt="فلتر" className="w-4 h-4 object-contain mt-1" />
+                        فلتر
+                    </button>
                 </div>
             </div>
 
             {/* Table Section */}
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div className="bg-white rounded-lg shadow-sm overflow-hidden mt-4">
                 <div className="overflow-x-auto">
                     <table className="w-full min-w-full" dir="rtl">
                         <thead className="bg-gray-50">
@@ -403,20 +389,18 @@ const Providers = () => {
                                 <th className="px-6 py-3 text-sm font-medium text-gray-500 uppercase tracking-wider text-right">
                                     {activeTab === 'registered' ? 'عدد الخدمات' : 'حاله الطلب'}
                                 </th>
-                                <th className="px-6 py-3 text-sm font-medium text-gray-500  tracking-wider text-right">Action</th>
+                                <th className="px-6 py-3 text-sm font-medium text-gray-500  tracking-wider text-right">الإجراء</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {currentData.map((item, index) => (
+                            {currentData.map((item) => (
                                 <tr
                                     key={item.id}
                                     className="hover:bg-gray-50 cursor-pointer"
                                     onClick={() => {
-                                        if (activeTab === 'registered') {
-                                            handleProviderRowClick(item);
-                                        } else {
-                                            handleRequestRowClick(item);
-                                        }
+                                        activeTab === 'registered'
+                                            ? handleProviderRowClick(item)
+                                            : handleRequestRowClick(item);
                                     }}
                                 >
                                     <td className="px-6 py-4 whitespace-nowrap">
@@ -449,9 +433,7 @@ const Providers = () => {
                                             <span className="text-sm mr-4 font-semibold text-gray-600">{item.category}</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
-                                        {item.phone}
-                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">{item.phone}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-black text-right">{item.email}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
                                         {activeTab === 'registered' ? item.joinDate : item.requestDate}
@@ -460,23 +442,9 @@ const Providers = () => {
                                         {activeTab === 'registered' ? (
                                             <span className="text-sm font-medium">{item.services}</span>
                                         ) : (
-                                            <>
-                                                {item.action === 'قبول' && (
-                                                    <button className="px-3 pb-1 text-sm border border-green-600 text-green-600 rounded-3xl hover:bg-green-50 transition">
-                                                        قبول
-                                                    </button>
-                                                )}
-                                                {item.action === 'المعلقه' && (
-                                                    <button className="px-4  pb-1 font-semibold text-sm border-1 bg-[#FFFDFA] border-[#FFC62B] text-[#FFC62B] rounded-3xl transition">
-                                                        المعلقه
-                                                    </button>
-                                                )}
-                                                {item.action === 'رفض' && (
-                                                    <button className="px-3 pb-1 text-sm border border-[#FF372A] text-[#FF372A] rounded-3xl hover:bg-#FF372A transition">
-                                                        رفض
-                                                    </button>
-                                                )}
-                                            </>
+                                            <button className="px-4 pb-1 font-semibold text-sm border-1 bg-[#FFFDFA] border-[#FFC62B] text-[#FFC62B] rounded-3xl transition">
+                                                المعلقه
+                                            </button>
                                         )}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -488,14 +456,12 @@ const Providers = () => {
                     </table>
                 </div>
 
-                {/* No Results Message */}
                 {currentData.length === 0 && (
                     <div className="text-center py-8">
                         <p className="text-gray-500">لا توجد نتائج للبحث "{searchTerm}"</p>
                     </div>
                 )}
 
-                {/* Pagination */}
                 {currentData.length > 0 && (
                     <div className="bg-white px-6 py-3 pt-8 mb-10 flex items-center justify-between border-t border !border-b-0 border-gray-200">
                         <div className="flex items-center gap-1">
@@ -510,10 +476,9 @@ const Providers = () => {
                                 <button
                                     key={page}
                                     onClick={() => setCurrentPage(page)}
-                                    className={`px-3 py-1 text-sm rounded  ${currentPage === page
+                                    className={`px-3 py-1 text-sm rounded ${currentPage === page
                                         ? 'bg-[#E0E4EE] text-[#25282D] font-semibold'
-                                        : 'border-gray-300 text-[#25282D] hover:bg-gray-100'
-                                        }`}
+                                        : 'border-gray-300 text-[#25282D] hover:bg-gray-100'}`}
                                 >
                                     {page}
                                 </button>
@@ -521,10 +486,9 @@ const Providers = () => {
                             <span className="px-2 py-1 text-sm text-[#25282D] font-semibold">...</span>
                             <button
                                 onClick={() => setCurrentPage(10)}
-                                className={`px-3 py-1 text-sm rounded  ${currentPage === 10
+                                className={`px-3 py-1 text-sm rounded ${currentPage === 10
                                     ? 'bg-[#E0E4EE] text-[#25282D] font-semibold'
-                                    : 'border-gray-300 text-[#25282D] hover:bg-gray-100'
-                                    }`}
+                                    : 'border-gray-300 text-[#25282D] hover:bg-gray-100'}`}
                             >
                                 10
                             </button>

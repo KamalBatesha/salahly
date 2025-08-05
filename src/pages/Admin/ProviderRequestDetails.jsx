@@ -40,29 +40,183 @@ const ProviderRequestDetails = () => {
     };
 
     const handleAccept = () => {
-        setStatus('accepted');
         if (requestData) {
-            updateRequestStatusInLocalStorage(requestData.id, 'مقبول', 'قبول');
+            console.log('=== ACCEPTING REQUEST ===');
+            console.log('Request data:', requestData);
+            
+            // First, add to providers list
+            const success = addToProvidersList(requestData);
+            console.log('Add to providers result:', success);
+            
+            if (success) {
+                // Then remove from join requests
+                removeFromJoinRequests(requestData.id);
+                
+                // Update status
+                setStatus('accepted');
+                
+                console.log('=== DISPATCHING EVENTS ===');
+                
+                // Dispatch custom event for immediate UI update
+                window.dispatchEvent(new CustomEvent('dataUpdated', { 
+                    detail: { 
+                        type: 'provider_accepted', 
+                        providerId: requestData.id,
+                        providerName: requestData.name 
+                    } 
+                }));
+                
+                // Dispatch storage events to trigger other components
+                window.dispatchEvent(new StorageEvent('storage', {
+                    key: 'providers',
+                    newValue: localStorage.getItem('providers'),
+                    oldValue: null
+                }));
+                
+                window.dispatchEvent(new StorageEvent('storage', {
+                    key: 'joinRequests', 
+                    newValue: localStorage.getItem('joinRequests'),
+                    oldValue: null
+                }));
+                
+                console.log('=== ALL EVENTS DISPATCHED ===');
+                
+                // Navigate back after delay
+                setTimeout(() => {
+                    console.log('Navigating back to providers...');
+                    navigate("/providers");
+                }, 1500);
+            } else {
+                console.error('Failed to add provider to list');
+            }
         }
     };
 
     const handleReject = () => {
-        setStatus('rejected');
         if (requestData) {
-            updateRequestStatusInLocalStorage(requestData.id, 'مرفوض', 'رفض');
+            console.log('=== REJECTING REQUEST ===');
+            console.log('Request data:', requestData);
+            
+            // Remove from join requests
+            removeFromJoinRequests(requestData.id);
+            
+            // Update status
+            setStatus('rejected');
+            
+            console.log('=== DISPATCHING EVENTS ===');
+            
+            // Dispatch events
+            window.dispatchEvent(new CustomEvent('dataUpdated', { 
+                detail: { 
+                    type: 'provider_rejected', 
+                    providerId: requestData.id,
+                    providerName: requestData.name 
+                } 
+            }));
+            
+            window.dispatchEvent(new StorageEvent('storage', {
+                key: 'joinRequests',
+                newValue: localStorage.getItem('joinRequests'),
+                oldValue: null
+            }));
+            
+            console.log('=== REJECTION EVENTS DISPATCHED ===');
+            
+            // Navigate back after delay
+            setTimeout(() => {
+                console.log('Navigating back to providers...');
+                navigate("/providers");
+            }, 1500);
         }
     };
 
-    const updateRequestStatusInLocalStorage = (requestId, newStatus, newAction) => {
+    const addToProvidersList = (requestData) => {
+        console.log('=== ADDING TO PROVIDERS LIST ===');
+        
+        // Get existing providers from localStorage
+        const savedProviders = localStorage.getItem('providers');
+        console.log('Current saved providers:', savedProviders);
+        
+        let providers = [];
+        
+        if (savedProviders) {
+            try {
+                providers = JSON.parse(savedProviders);
+                if (!Array.isArray(providers)) {
+                    providers = [];
+                }
+            } catch (error) {
+                console.error('Error parsing providers:', error);
+                providers = [];
+            }
+        }
+
+        console.log('Current providers array:', providers);
+
+        // Check if provider already exists to avoid duplicates
+        const existingProvider = providers.find(p => 
+            p.email === requestData.email || 
+            p.phone === requestData.phone ||
+            p.id === requestData.id
+        );
+        
+        if (!existingProvider) {
+            // Generate new ID for the provider (find the highest ID and add 1)
+            const maxId = providers.length > 0 ? Math.max(...providers.map(p => p.id)) : 0;
+            
+            const newProvider = {
+                id: maxId + 1,
+                name: requestData.name,
+                email: requestData.email,
+                phone: requestData.phone,
+                joinDate: new Date().toISOString().split('T')[0], // Format: YYYY-MM-DD
+                category: requestData.category,
+                services: '0', // New provider starts with 0 services
+                avatar: requestData.avatar || 'images/avatar.jpg',
+                address: requestData.address || ''
+            };
+
+            providers.push(newProvider);
+            
+            console.log('New provider created:', newProvider);
+            console.log('Updated providers array:', providers);
+            
+            localStorage.setItem('providers', JSON.stringify(providers));
+            console.log('Providers saved to localStorage');
+            
+            return true;
+        } else {
+            console.log('Provider already exists:', existingProvider);
+            return false;
+        }
+    };
+
+    const removeFromJoinRequests = (requestId) => {
+        console.log('=== REMOVING FROM JOIN REQUESTS ===');
+        console.log('Removing request ID:', requestId);
+        
         const savedRequests = localStorage.getItem('joinRequests');
+        console.log('Current saved requests:', savedRequests);
+        
         if (savedRequests) {
-            const requests = JSON.parse(savedRequests);
-            const updatedRequests = requests.map(request =>
-                request.id === requestId
-                    ? { ...request, status: newStatus, action: newAction }
-                    : request
-            );
-            localStorage.setItem('joinRequests', JSON.stringify(updatedRequests));
+            try {
+                const requests = JSON.parse(savedRequests);
+                console.log('Parsed requests:', requests);
+                
+                if (Array.isArray(requests)) {
+                    const updatedRequests = requests.filter(request => request.id !== requestId);
+                    console.log('Updated requests after filter:', updatedRequests);
+                    
+                    localStorage.setItem('joinRequests', JSON.stringify(updatedRequests));
+                    console.log('Updated requests saved to localStorage');
+                } else {
+                    console.error('Join requests is not an array:', requests);
+                }
+            } catch (error) {
+                console.error('Error removing from join requests:', error);
+            }
+        } else {
+            console.log('No join requests found in localStorage');
         }
     };
 
@@ -84,18 +238,18 @@ const ProviderRequestDetails = () => {
                         <h2 className="text-xl font-bold">{requestData.name}</h2>
                     </div>
 
-                    <div className="flex me-10">
+                    <div className="flex me-10 gap-3">
                         {status === null && (
                             <>
                                 <button
                                     onClick={handleAccept}
-                                    className="px-6 py-2 bg-[#004AAD] text-white rounded-3xl text-sm font-semibold"
+                                    className="px-6 py-2 bg-[#004AAD] text-white rounded-3xl text-sm font-semibold hover:bg-[#003a8c] transition-colors cursor-pointer"
                                 >
                                     قبول الطلب
                                 </button>
                                 <button
                                     onClick={handleReject}
-                                    className="px-4 py-2 bg-[#FBFCFE] text-[#FF372A] rounded-3xl font-semibold text-sm"
+                                    className="px-4 py-2 bg-[#FBFCFE] text-[#FF372A] border border-[#FF372A] rounded-3xl font-semibold text-sm hover:bg-[#FF372A] hover:text-white transition-colors cursor-pointer"
                                 >
                                     رفض الطلب
                                 </button>
@@ -103,19 +257,25 @@ const ProviderRequestDetails = () => {
                         )}
 
                         {status === 'accepted' && (
-                            <button
-                                className="px-6 py-2 bg-green-600 text-white rounded-3xl text-sm font-semibold cursor-default"
-                            >
-                                تم القبول
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    className="px-6 py-2 bg-green-600 text-white rounded-3xl text-sm font-semibold cursor-default"
+                                >
+                                    ✓ تم القبول
+                                </button>
+                                <span className="text-sm text-gray-600">جاري التحديث...</span>
+                            </div>
                         )}
 
                         {status === 'rejected' && (
-                            <button
-                                className="px-6 py-2 bg-red-600 text-white rounded-3xl text-sm font-semibold cursor-default"
-                            >
-                                تم الرفض
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    className="px-6 py-2 bg-red-600 text-white rounded-3xl text-sm font-semibold cursor-default"
+                                >
+                                    ✗ تم الرفض
+                                </button>
+                                <span className="text-sm text-gray-600">جاري التحديث...</span>
+                            </div>
                         )}
                     </div>
                 </div>
@@ -128,6 +288,9 @@ const ProviderRequestDetails = () => {
                                     src={requestData.avatar}
                                     alt={requestData.name}
                                     className="w-12 h-12 rounded-full object-cover me-2"
+                                    onError={(e) => {
+                                        e.target.src = 'images/avatar.jpg';
+                                    }}
                                 />
                                 <div className="flex-1 text-right">
                                     <h3 className="text-lg font-bold mb-1">{requestData.name}</h3>
@@ -135,7 +298,7 @@ const ProviderRequestDetails = () => {
                                         {requestData.category}
                                     </span>
                                     <div className="flex justify-between text-base mb-3 mt-2">
-                                        <p className="text-black">العنوان: {requestData.address}</p>
+                                        <p className="text-black">العنوان: {requestData.address || 'غير محدد'}</p>
                                         <p className="text-black">البريد: {requestData.email}</p>
                                     </div>
                                     <p className="text-black mt-4">رقم الهاتف: {requestData.phone}</p>
@@ -211,7 +374,7 @@ const ProviderRequestDetails = () => {
                                     </div>
                                     <div className='text-center mt-40 px-10'>
                                         <h2 className='text-xl font-bold mb-2'>{requestData.name} ليس صنايعى حاليا</h2>
-                                        <p className='text-lg font-medium'>راجع بيانات {requestData.name} المقدمه من تاريخ {requestData.requestDate} لكى يستيطه اضافه خدماتن </p>
+                                        <p className='text-lg font-medium'>راجع بيانات {requestData.name} المقدمه من تاريخ {requestData.requestDate} لكى يستطيع اضافه خدمات </p>
                                     </div>
                                 </div>
                             </div>
@@ -222,4 +385,5 @@ const ProviderRequestDetails = () => {
         </>
     )
 }
+
 export default ProviderRequestDetails;

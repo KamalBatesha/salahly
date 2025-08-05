@@ -22,6 +22,26 @@ const services = [
     },
 ];
 
+const deleteProviderFromStorage = (id) => {
+    const savedProviders = localStorage.getItem('providers');
+    if (savedProviders) {
+        try {
+            const providers = JSON.parse(savedProviders);
+            const updated = providers.filter(p => p.id !== id);
+            localStorage.setItem('providers', JSON.stringify(updated));
+
+            // إرسال إشعار للتحديث
+            window.dispatchEvent(new StorageEvent('storage', {
+                key: 'providers',
+                oldValue: null,
+                newValue: JSON.stringify(updated),
+            }));
+        } catch (error) {
+            console.error('خطأ أثناء حذف المزود:', error);
+        }
+    }
+};
+
 const JoinedProviderDetails = () => {
     const navigate = useNavigate();
     const [providerData, setProviderData] = useState(null);
@@ -34,9 +54,12 @@ const JoinedProviderDetails = () => {
     }, []);
 
     const handleDeleteClick = () => {
-        const confirmed = window.confirm("هل أنت متأكد من حذف هذا العنصر؟");
-        if (confirmed) {
-            navigate("/providers");
+        const confirmed = window.confirm("هل أنت متأكد من حذف هذا المزود؟");
+        if (confirmed && providerData?.id) {
+            deleteProviderFromStorage(providerData.id);
+            setTimeout(() => {
+                navigate("/providers");
+            }, 1000);
         }
     };
 
@@ -160,9 +183,9 @@ const JoinedProviderDetails = () => {
                                                 key={index}
                                                 service={service}
                                                 cardStyle="vertical"
-                                                // navigation={() => {
-                                                //     console.log('navigate to providerServicesScreen');
-                                                // }}
+                                            // navigation={() => {
+                                            //     console.log('navigate to providerServicesScreen');
+                                            // }}
                                             />
                                         ))}
                                     </div>
