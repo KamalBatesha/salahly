@@ -109,7 +109,7 @@ export const AdminDashBoard = () => {
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200 px-4 py-6 h-[450px]">
                         {/* Top row: title right, button left */}
                         <div className="flex flex-row-reverse items-center justify-between mb-4">
-                            <button
+                            <button 
                                 onClick={() => navigate('/students')}
                                 className="text-black text-sm hover:underline cursor-pointer"
                             >
