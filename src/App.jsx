@@ -29,6 +29,7 @@ import { useContext } from 'react'
 import AboutUs from './pages/AboutUs'
 import JoinedProviderDetails from './pages/Admin/JoinedProviderDetails'
 import ProviderRequestDetails from './pages/Admin/ProviderRequestDetails'
+import AdminServices from "./pages/Admin/AdminServices";
 
 
 
@@ -44,43 +45,44 @@ const userTypes={
 
   let router =createBrowserRouter([
     {
-      path:"/signUp",
-      element:<SignUp/>,
-      children:[
+      path: "/signUp",
+      element: <SignUp />,
+      children: [
         {
-          index:true,
-          element: <FormInput/>
+          index: true,
+          element: <FormInput />,
         },
         {
-          path:"role",
-          element:<FormRole/>
+          path: "role",
+          element: <FormRole />,
         },
         {
-          path:"provider",
-          element:<SignUpDetails/>
-        }
-      ]
+          path: "provider",
+          element: <SignUpDetails />,
+        },
+      ],
     },
     {
-      path:"/login",
-      element:<Login/>
-    },{
-      path:"/acountStatus",
-      element:<AcountStatus/>,
-      children:[
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/acountStatus",
+      element: <AcountStatus />,
+      children: [
         {
-          path:"pending",
-          element:<Pending/>
+          path: "pending",
+          element: <Pending />,
         },
         {
-          path:"rejected",
-          element:<Rejected/>
+          path: "rejected",
+          element: <Rejected />,
         },
         {
-          path:"confirm/:token",
-          element:<Confirmed/>
-        }
-      ]
+          path: "confirm/:token",
+          element: <Confirmed />,
+        },
+      ],
     },
     {
       path: "/",
@@ -215,9 +217,9 @@ const userTypes={
       ):<Navigate to="/" replace />
     },
     {
-      path:"*",
-      element:<Navigate to="/" replace />
-    }
+      path: "*",
+      element: <Navigate to="/" replace />,
+    },
   ]);
   return (
     // <UserContextProvider>
@@ -227,4 +229,4 @@ const userTypes={
   );
 }
 
-export default App
+export default App;
