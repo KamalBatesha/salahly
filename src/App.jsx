@@ -35,7 +35,7 @@ import ProviderRequestDetails from './pages/Admin/ProviderRequestDetails'
 function App() {
   // let {userRole,token}=useContext(UserContext)
 // console.log(userRole,token);
-let userRole="provider";
+let userRole="admin";
 const userTypes={
   admin:"admin",
   provider:"provider",
@@ -196,6 +196,23 @@ const userTypes={
     {
       path:"/aboutUs",
       element:<AboutUs/>
+    },
+    {
+      path:"/ProviderRequestDetails",
+      element:userRole==userTypes.admin?(
+        <AdminLayout>
+          <ProviderRequestDetails />
+        </AdminLayout>
+      ):<Navigate to="/" replace />
+    },
+    ,
+    {
+      path:"/JoinedProviderDetails",
+      element:userRole==userTypes.admin?(
+        <AdminLayout>
+          <JoinedProviderDetails />
+        </AdminLayout>
+      ):<Navigate to="/" replace />
     },
     {
       path:"*",

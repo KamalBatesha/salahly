@@ -11,8 +11,8 @@ export const Sidebar = ({ isOpen }) => {
         { id: 'students', icon: 'clients-filled.png', activeIcon: 'clients.png', label: 'العملاء', path: '/clients' },
         { id: 'applications', icon: 'menu-board-filled.png', activeIcon: 'menu-board.png', label: 'الطلبات', path: '/orders' },
         { id: 'reports', icon: 'category-filled.png', activeIcon: 'category.png', label: 'تخصص', path: '/services' },
-        { id: 'reports', icon: 'services.png', activeIcon: 'services-outline.png', label: 'خدمات', path: '/profile' },
-        { id: 'reports', icon: 'message-filled.png', activeIcon: 'message-outline.png', label: 'الرسائل', path: '/AdminChat' },
+        { id: 'reports', icon: 'services.png', activeIcon: 'services-outline.png', label: 'خدمات', path: '/categories' },
+        { id: 'reports', icon: 'message-filled.png', activeIcon: 'message-outline.png', label: 'الرسائل', path: '/messages' },
     ];
 
     const bottomMenu = [
