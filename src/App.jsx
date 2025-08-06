@@ -30,13 +30,15 @@ import AboutUs from './pages/AboutUs'
 import JoinedProviderDetails from './pages/Admin/JoinedProviderDetails'
 import ProviderRequestDetails from './pages/Admin/ProviderRequestDetails'
 import AdminServices from "./pages/Admin/AdminServices";
+import UserLayout from './components/UserLayout/UserLayout'
+import UserHome from './pages/User/UserHome'
 
 
 
 function App() {
   // let {userRole,token}=useContext(UserContext)
 // console.log(userRole,token);
-let userRole="admin";
+let userRole="user";
 const userTypes={
   admin:"admin",
   provider:"provider",
@@ -97,7 +99,13 @@ const userTypes={
           <ProviderLayout>
             <ProviderDashBoard/>
           </ProviderLayout>
-        ):<h1>user Home</h1>
+        ):userRole==userTypes.user? (
+          <UserLayout>
+            <UserHome />
+          </UserLayout>
+        ): (
+          <div>Unauthorized</div>
+        ),
     },
     // {
     //   path: "/adminDashboard",
