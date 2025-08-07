@@ -30,6 +30,9 @@ import AboutUs from './pages/AboutUs'
 import JoinedProviderDetails from './pages/Admin/JoinedProviderDetails'
 import ProviderRequestDetails from './pages/Admin/ProviderRequestDetails'
 import AdminServices from "./pages/Admin/AdminServices";
+import UserLayout from './components/UserLayout/UserLayout'
+import UserHome from './pages/User/UserHome'
+
 import ServicesScreen from './pages/User/ServicesScreen'
 import ServiceDetailsScreen from './pages/User/ServiceDetailsScreen'
 import { User } from 'lucide-react'
@@ -37,6 +40,13 @@ import { User } from 'lucide-react'
 
 function App() {
   // let {userRole,token}=useContext(UserContext)
+// console.log(userRole,token);
+let userRole="user";
+const userTypes={
+  admin:"admin",
+  provider:"provider",
+  user:"user"
+}
   // console.log(userRole,token);
   let userRole = "user";
   const userTypes = {
@@ -94,6 +104,18 @@ function App() {
           <AdminLayout>
             <AdminDashBoard />
           </AdminLayout>
+        ):
+        userRole==userTypes.provider? (
+          <ProviderLayout>
+            <ProviderDashBoard/>
+          </ProviderLayout>
+        ):userRole==userTypes.user? (
+          <UserLayout>
+            <UserHome />
+          </UserLayout>
+        ): (
+          <div>Unauthorized</div>
+        ),
         ) :
           userRole == userTypes.provider ? (
             <ProviderLayout>
