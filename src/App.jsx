@@ -40,13 +40,6 @@ import { User } from 'lucide-react'
 
 function App() {
   // let {userRole,token}=useContext(UserContext)
-// console.log(userRole,token);
-let userRole="user";
-const userTypes={
-  admin:"admin",
-  provider:"provider",
-  user:"user"
-}
   // console.log(userRole,token);
   let userRole = "user";
   const userTypes = {
@@ -115,15 +108,7 @@ const userTypes={
           </UserLayout>
         ): (
           <div>Unauthorized</div>
-        ),
-        ) :
-          userRole == userTypes.provider ? (
-            <ProviderLayout>
-              <ProviderDashBoard />
-            </ProviderLayout>
-          ) : userRole == userTypes.user ? (
-            <ServicesScreen />
-          ) : (<h1>user Home</h1>)
+        )
     },
     // {
     //   path: "/adminDashboard",
