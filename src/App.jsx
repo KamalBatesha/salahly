@@ -250,14 +250,12 @@ function App() {
     //   element: <AboutUs />
     // },
     {
-      path: "/ProviderRequestDetails",
-      element: userRole == userTypes.admin ? (
-      path:"/aboutUs",
-      element:<AboutUs/>
-    },
-    {
       path:"/ContactUs",
-      element:<ContactUs/>
+      element:(
+        <UserLayout>
+          <ContactUs />
+        </UserLayout>
+      )
     },
     {
       path:"/ProviderRequestDetails",
