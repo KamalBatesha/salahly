@@ -38,6 +38,8 @@ import ServicesScreen from './pages/User/ServicesScreen'
 import ServiceDetailsScreen from './pages/User/ServiceDetailsScreen'
 import { User } from 'lucide-react'
 import BookingPopups from './pages/User/BookingPopups'
+import ProviderProfileScreen from './pages/user/provider_profile';
+import TalabatyScreen from './pages/user/talabaty';
 
 
 function App() {
@@ -263,16 +265,34 @@ function App() {
         <AdminLayout>
           <ProviderRequestDetails />
         </AdminLayout>
-      ) : <Navigate to="/" replace />
+      ):<Navigate to="/" replace />
     },
-    ,
+    
     {
-      path: "/JoinedProviderDetails",
-      element: userRole == userTypes.admin ? (
+      path:"/JoinedProviderDetails",
+      element:userRole==userTypes.admin?(
         <AdminLayout>
           <JoinedProviderDetails />
         </AdminLayout>
-      ) : <Navigate to="/" replace />
+      ):<Navigate to="/" replace />
+    },
+    {
+      path:"/ProviderProfileScreen",
+      element:userRole==userTypes.user?(
+        <UserLayout>
+          <ProviderProfileScreen />
+         </UserLayout>
+      ):<Navigate to="/" replace />
+      
+    },
+    {
+      path:"/TalabatyScreen",
+      element:userRole==userTypes.user?(
+        <UserLayout>
+          <TalabatyScreen />
+        </UserLayout>
+      ):<Navigate to="/" replace />
+      
     },
     {
       path: "*",

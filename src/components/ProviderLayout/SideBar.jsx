@@ -19,12 +19,11 @@ export const Sidebar = ({ isOpen }) => {
     ];
 
     const isActive = (path) => {
-        if (path === '/providerDashboard' && (location.pathname === '/' || location.pathname === '/providerDashboard')) {
+        if (path === '/' && (location.pathname === '/' || location.pathname === '/AdminDashBoard')) {
             return true;
         }
         return location.pathname === path;
     };
-
 
     const renderMenuItems = (items) => (
         items.map((item) => {
@@ -34,7 +33,7 @@ export const Sidebar = ({ isOpen }) => {
                     key={item.id}
                     onClick={() => navigate(item.path)}
                     className={`w-full flex flex-row-reverse items-center gap-3 px-3 py-3 rounded-lg transition-colors text-sm
-                    ${active ? 'bg-[#004AAD] text-white text-lg font-bold' : 'text-[#004AAD] hover:bg-gray-100 font-medium'}`}
+                    ${active ? 'bg-[#004AAD] text-white text-xl font-bold' : 'text-[#004AAD] hover:bg-gray-100 font-medium'}`}
 
                 >
 
