@@ -352,7 +352,7 @@ const ServiceDetailsScreen = ({ service, onBackToServices }) => {
                 <div className="fixed inset-0 bg-black/60  flex items-center justify-center z-50">
                     <div className="bg-white rounded-2xl w-full max-w-xl mx-4 overflow-hidden max-h-[80vh] overflow-y-auto" dir="rtl">
                         {/* Header */}
-                        <div className="bg-white text-black pt-8 px-2 flex items-center gap-2 mr-1">
+                        <div className="bg-white text-black pt-8 px-2 flex items-center gap-2 mr-4">
                             <button className="p-0.5 bg-[#004AAD] rounded-full hover:bg-white hover:text-[#004AAD]">
                                 <ChevronRight size={18} className="text-white" />
                             </button>
@@ -364,11 +364,11 @@ const ServiceDetailsScreen = ({ service, onBackToServices }) => {
                         <div className="p-4">
                             {/* Step indicator */}
                             <div className="text-right font-semibold mb-6 mt-2">
-                                <p className="text-black">الخطوة الثانية . شرح مشكلة</p>
+                                <p className="text-black mr-4">الخطوة الثانية . شرح مشكلة</p>
                             </div>
 
                             {/* Text input */}
-                            <div className="mb-6">
+                            <div className="mb-4 px-4">
                                 <label className="block text-right mb-2 font-semibold">شرح مشكلة</label>
                                 <textarea
                                     value={shareText}
@@ -380,7 +380,7 @@ const ServiceDetailsScreen = ({ service, onBackToServices }) => {
                             </div>
 
                             {/* Image upload */}
-                            <div className="mb-6">
+                            <div className="mb-6 px-4">
                                 <label className="block text-right mb-2 font-medium">صورة مشكلة</label>
                                 <div
                                     onClick={handleImageSelect}
