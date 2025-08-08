@@ -36,6 +36,7 @@ import UserHome from './pages/User/UserHome'
 import ServicesScreen from './pages/User/ServicesScreen'
 import ServiceDetailsScreen from './pages/User/ServiceDetailsScreen'
 import { User } from 'lucide-react'
+import BookingPopups from './pages/User/BookingPopups'
 
 
 function App() {
@@ -97,18 +98,18 @@ function App() {
           <AdminLayout>
             <AdminDashBoard />
           </AdminLayout>
-        ):
-        userRole==userTypes.provider? (
-          <ProviderLayout>
-            <ProviderDashBoard/>
-          </ProviderLayout>
-        ):userRole==userTypes.user? (
-          <UserLayout>
-            <UserHome />
-          </UserLayout>
-        ): (
-          <div>Unauthorized</div>
-        )
+        ) :
+          userRole == userTypes.provider ? (
+            <ProviderLayout>
+              <ProviderDashBoard />
+            </ProviderLayout>
+          ) : userRole == userTypes.user ? (
+            <UserLayout>
+              <UserHome />
+            </UserLayout>
+          ) : (
+            <div>Unauthorized</div>
+          )
     },
     // {
     //   path: "/adminDashboard",
@@ -130,13 +131,25 @@ function App() {
     {
       path: "/userServices",
       element: userRole == userTypes.user ? (
-        <ServicesScreen />
+        <UserLayout>
+          <ServicesScreen />
+        </UserLayout>
       ) : <Navigate to="/" replace />,
     },
     {
       path: "/serviceDetails",
       element: userRole == userTypes.user ? (
-        <ServiceDetailsScreen />
+        <UserLayout>
+          <ServiceDetailsScreen />
+        </UserLayout>
+      ) : <Navigate to="/" replace />,
+    },
+    {
+      path: "/bookingPopups",
+      element: userRole == userTypes.user ? (
+        <UserLayout>
+          <BookingPopups/>
+        </UserLayout>
       ) : <Navigate to="/" replace />,
     },
     // {

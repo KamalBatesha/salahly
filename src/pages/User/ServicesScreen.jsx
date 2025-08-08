@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown } from 'lucide-react';
 import ServiceDetailsCard from '../../components/serviceDetailsCard';
+import { useNavigate } from 'react-router-dom';
 
 const ServicesScreen = ({ onServiceSelect }) => {
     const allServices = Array(67).fill(null).map((_, i) => ({
@@ -13,7 +14,7 @@ const ServicesScreen = ({ onServiceSelect }) => {
         image: 'images/avatar.jpg',
         avatar: 'images/avatar.jpg'
     }));
-
+    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(12);
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -24,6 +25,7 @@ const ServicesScreen = ({ onServiceSelect }) => {
     const currentData = allServices.slice(startIndex, endIndex);
 
     const pageOptions = [6, 12, 18];
+
 
     const renderPageButtons = () => {
         const pages = [];
@@ -63,7 +65,7 @@ const ServicesScreen = ({ onServiceSelect }) => {
         <div className="min-h-screen bg-white">
             <div className="max-w-7xl mx-auto px-8 py-8">
 
-                <h1 className="text-3xl font-bold text-right text-gray-800 mb-15 mt-5 mr-2">الخدمات</h1>
+                <h1 className="text-3xl font-bold text-right text-gray-800 mb-10 mr-2">الخدمات</h1>
 
                 <div className="flex gap-4">
                     {/* Left: Cards and Pagination */}
@@ -76,7 +78,7 @@ const ServicesScreen = ({ onServiceSelect }) => {
                                     key={service.id}
                                     service={service}
                                     cardStyle="vertical"
-                                    navigation={() => onServiceSelect(service)}
+                                    navigation={() => navigate('/serviceDetails')}
                                 />
                             ))}
                         </div>

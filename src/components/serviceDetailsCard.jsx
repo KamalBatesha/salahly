@@ -57,14 +57,14 @@ const ServiceDetailsCard = ({
 
     return (
         <div
-            className={`bg-white rounded-xl shadow-md overflow-hidden mb-4 ${isHorizontal ? 'w-[320px] ' : 'w-full'
+            className={`bg-white rounded-xl shadow-md overflow-hidden mb-4 ${isHorizontal ? 'w-[250px] ' : 'w-full'
                 }`}
         >
-            <div className="relative h-20 ">
+            <div className="relative h-25 ">
                 <img
                     src={service.image}
                     alt="service"
-                    className="w-full h-full  object-cover"
+                    className="w-full h-full  object-top "
                 />
 
                 <button
@@ -113,7 +113,7 @@ const ServiceDetailsCard = ({
                 {showBookButton && (
                     <button
                         onClick={handleBookNow}
-                        className="w-full border-1 border-[#004AAD] text-[#004AAD] rounded-full py-1 font-semibold text-sm hover:bg-[#004AAD] hover:text-white transition"
+                        className="w-full cursor-pointer border-1 border-[#004AAD] text-[#004AAD] rounded-full py-1 font-semibold text-sm hover:bg-[#004AAD] hover:text-white transition"
                     >
                         احجز الان
                     </button>
