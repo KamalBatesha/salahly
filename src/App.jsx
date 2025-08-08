@@ -1,11 +1,11 @@
-import { createBrowserRouter, RouterProvider,Navigate } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import './App.css'
 import SignUp from './pages/SignUp'
 import UserContextProvider, { UserContext } from './context/UserContext'
 import FormInput from './components/formInput/FormInput'
 import { AdminDashBoard } from './pages/Admin/AdminDashBoard'
 import AdminLayout from './components/AdminLayout/AdminLayout'
-import {ProviderDashBoard} from './pages/Provider/ProviderDashBoard'
+import { ProviderDashBoard } from './pages/Provider/ProviderDashBoard'
 import ProviderLayout from './components/ProviderLayout/ProviderLayout'
 import Providers from './pages/Admin/Providers'
 import './App.css'
@@ -30,21 +30,27 @@ import AboutUs from './pages/AboutUs'
 import JoinedProviderDetails from './pages/Admin/JoinedProviderDetails'
 import ProviderRequestDetails from './pages/Admin/ProviderRequestDetails'
 import AdminServices from "./pages/Admin/AdminServices";
+import UserLayout from './components/UserLayout/UserLayout'
+import UserHome from './pages/User/UserHome'
 import ContactUs from './pages/ContactUs'
 
+import ServicesScreen from './pages/User/ServicesScreen'
+import ServiceDetailsScreen from './pages/User/ServiceDetailsScreen'
+import { User } from 'lucide-react'
+import BookingPopups from './pages/User/BookingPopups'
 
 
 function App() {
   // let {userRole,token}=useContext(UserContext)
-// console.log(userRole,token);
-let userRole="admin";
-const userTypes={
-  admin:"admin",
-  provider:"provider",
-  user:"user"
-}
+  // console.log(userRole,token);
+  let userRole = "user";
+  const userTypes = {
+    admin: "admin",
+    provider: "provider",
+    user: "user"
+  }
 
-  let router =createBrowserRouter([
+  let router = createBrowserRouter([
     {
       path: "/signUp",
       element: <SignUp />,
@@ -89,16 +95,22 @@ const userTypes={
       path: "/",
       element:
 
-        userRole==userTypes.admin? (
+        userRole == userTypes.admin ? (
           <AdminLayout>
-          <AdminDashBoard />
+            <AdminDashBoard />
           </AdminLayout>
-        ):
-        userRole==userTypes.provider? (
-          <ProviderLayout>
-            <ProviderDashBoard/>
-          </ProviderLayout>
-        ):<h1>user Home</h1>
+        ) :
+          userRole == userTypes.provider ? (
+            <ProviderLayout>
+              <ProviderDashBoard />
+            </ProviderLayout>
+          ) : userRole == userTypes.user ? (
+            <UserLayout>
+              <UserHome />
+            </UserLayout>
+          ) : (
+            <div>Unauthorized</div>
+          )
     },
     // {
     //   path: "/adminDashboard",
@@ -110,11 +122,44 @@ const userTypes={
     // },
     {
       path: "/providers",
-      element:userRole==userTypes.admin? (
-         <AdminLayout>
-          <Providers/>
+      element: userRole == userTypes.admin ? (
+        <AdminLayout>
+          <Providers />
         </AdminLayout>
-      ):<Navigate to="/" replace />,
+      ) : <Navigate to="/" replace />,
+    },
+
+    {
+      path: "/services",
+      element: userRole == userTypes.user ? (
+        <UserLayout>
+          <ServicesScreen />
+        </UserLayout>
+      ) : <Navigate to="/" replace />,
+    },
+    {
+      path: "/serviceDetails",
+      element: userRole == userTypes.user ? (
+        <UserLayout>
+          <ServiceDetailsScreen />
+        </UserLayout>
+      ) : <Navigate to="/" replace />,
+    },
+    {
+      path: "/bookingPopups",
+      element: userRole == userTypes.user ? (
+        <UserLayout>
+          <BookingPopups/>
+        </UserLayout>
+      ) : <Navigate to="/" replace />,
+    },
+    {
+      path: "/about",
+      element: userRole == userTypes.user ? (
+        <UserLayout>
+          <AboutUs />
+        </UserLayout>
+      ) : <Navigate to="/" replace />,
     },
     // {
     //   path: "/providerDashboard",
@@ -126,81 +171,87 @@ const userTypes={
     // },
     {
       path: "/profile",
-      element: userRole==userTypes.provider? (
+      element: userRole == userTypes.provider ? (
         <ProviderLayout>
           <Profile />
         </ProviderLayout>
-      ):<Navigate to="/" replace />,
+      ) : <Navigate to="/" replace />,
     },
     {
       path: "/services",
-      element: userRole==userTypes.provider?(
+      element: userRole == userTypes.provider ? (
         <ProviderLayout>
           <MyServices />
-          </ProviderLayout>
-      ): userRole==userTypes.admin?(
+        </ProviderLayout>
+      ) : userRole == userTypes.admin ? (
         <AdminLayout>
-          <AdminServices/>
+          <AdminServices />
         </AdminLayout>
-      ):<Navigate to="/" replace />
+      ) : <Navigate to="/" replace />
     },
     {
       path: "/messages",
-      element: userRole==userTypes.provider? (
+      element: userRole == userTypes.provider ? (
         <ProviderLayout>
-          <Messages  />
-          </ProviderLayout>
-      ):userRole==userTypes.admin? (
+          <Messages />
+        </ProviderLayout>
+      ) : userRole == userTypes.admin ? (
         <AdminLayout>
           <AdminChat />
         </AdminLayout>
-      ):<h1>user chat</h1>,
+      ) : <h1>user chat</h1>,
     },
     // {
     //   path:"/orders",
     //   element:<MyServices />
     // },
     {
-    path: "/orders",
-    element: userRole==userTypes.admin? (
-      <AdminLayout>
-        <Orders />
-      </AdminLayout>
-    ):userRole==userTypes.provider? (
-      <ProviderLayout>
-        <ProviderOrders />
-      </ProviderLayout>
-    ):<h1> user orders </h1>,
-  },
-  {
-    path:"/categories",
-    element:userRole==userTypes.admin? (
-      <AdminLayout>
-        <Categories />
-      </AdminLayout>
-    ):<Navigate to="/" replace />
-  },
-  {
-    path:"/clients",
-    element: userRole==userTypes.admin? (
-      <AdminLayout>
-        <Clients/>
+      path: "/orders",
+      element: userRole == userTypes.admin ? (
+        <AdminLayout>
+          <Orders />
         </AdminLayout>
-    ):<Navigate to="/" replace />
-  },
-  // {
-  //   path: "/ProviderOrders",
-  //   element: (
-  //     <ProviderLayout>
-  //       <ProviderOrders />
-  //     </ProviderLayout>
-  //     )
-  // },
+      ) : userRole == userTypes.provider ? (
+        <ProviderLayout>
+          <ProviderOrders />
+        </ProviderLayout>
+      ) : <h1> user orders </h1>,
+    },
+    {
+      path: "/categories",
+      element: userRole == userTypes.admin ? (
+        <AdminLayout>
+          <Categories />
+        </AdminLayout>
+      ) : <Navigate to="/" replace />
+    },
+    {
+      path: "/clients",
+      element: userRole == userTypes.admin ? (
+        <AdminLayout>
+          <Clients />
+        </AdminLayout>
+      ) : <Navigate to="/" replace />
+    },
+    // {
+    //   path: "/ProviderOrders",
+    //   element: (
+    //     <ProviderLayout>
+    //       <ProviderOrders />
+    //     </ProviderLayout>
+    //     )
+    // },
     // {
     //   path:"/settings",
     //   element:<MyServices />
     // },
+    // {
+    //   path: "/aboutUs",
+    //   element: <AboutUs />
+    // },
     {
+      path: "/ProviderRequestDetails",
+      element: userRole == userTypes.admin ? (
       path:"/aboutUs",
       element:<AboutUs/>
     },
@@ -214,16 +265,16 @@ const userTypes={
         <AdminLayout>
           <ProviderRequestDetails />
         </AdminLayout>
-      ):<Navigate to="/" replace />
+      ) : <Navigate to="/" replace />
     },
     ,
     {
-      path:"/JoinedProviderDetails",
-      element:userRole==userTypes.admin?(
+      path: "/JoinedProviderDetails",
+      element: userRole == userTypes.admin ? (
         <AdminLayout>
           <JoinedProviderDetails />
         </AdminLayout>
-      ):<Navigate to="/" replace />
+      ) : <Navigate to="/" replace />
     },
     {
       path: "*",
@@ -232,8 +283,8 @@ const userTypes={
   ]);
   return (
     // <UserContextProvider>
-      <RouterProvider router={router} />
-      // {/* <Toaster/> */}
+    <RouterProvider router={router} />
+    // {/* <Toaster/> */}
     // {/* </UserContextProvider> */}
   );
 }
