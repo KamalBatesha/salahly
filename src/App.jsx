@@ -129,7 +129,7 @@ function App() {
     },
 
     {
-      path: "/userServices",
+      path: "/services",
       element: userRole == userTypes.user ? (
         <UserLayout>
           <ServicesScreen />
@@ -149,6 +149,14 @@ function App() {
       element: userRole == userTypes.user ? (
         <UserLayout>
           <BookingPopups/>
+        </UserLayout>
+      ) : <Navigate to="/" replace />,
+    },
+    {
+      path: "/about",
+      element: userRole == userTypes.user ? (
+        <UserLayout>
+          <AboutUs />
         </UserLayout>
       ) : <Navigate to="/" replace />,
     },
@@ -236,10 +244,10 @@ function App() {
     //   path:"/settings",
     //   element:<MyServices />
     // },
-    {
-      path: "/aboutUs",
-      element: <AboutUs />
-    },
+    // {
+    //   path: "/aboutUs",
+    //   element: <AboutUs />
+    // },
     {
       path: "/ProviderRequestDetails",
       element: userRole == userTypes.admin ? (

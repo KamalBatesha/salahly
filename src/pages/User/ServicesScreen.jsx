@@ -62,7 +62,7 @@ const ServicesScreen = ({ onServiceSelect }) => {
     };
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen">
             <div className="max-w-7xl mx-auto px-8 py-8">
 
                 <h1 className="text-3xl font-bold text-right text-gray-800 mb-10 mr-2">الخدمات</h1>
