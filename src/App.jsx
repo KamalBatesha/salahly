@@ -30,6 +30,7 @@ import AboutUs from './pages/AboutUs'
 import JoinedProviderDetails from './pages/Admin/JoinedProviderDetails'
 import ProviderRequestDetails from './pages/Admin/ProviderRequestDetails'
 import AdminServices from "./pages/Admin/AdminServices";
+import ContactUs from './pages/ContactUs'
 
 
 
@@ -202,6 +203,10 @@ const userTypes={
     {
       path:"/aboutUs",
       element:<AboutUs/>
+    },
+    {
+      path:"/ContactUs",
+      element:<ContactUs/>
     },
     {
       path:"/ProviderRequestDetails",

@@ -2,7 +2,7 @@ import React from 'react'
 
 function InputItem(props) {
     return (
-        <div className='mt-2'>
+        <div className={`mt-2 ${props.divClass}`}>
             <label name={props.name} htmlFor={props.name} className='font-normal text-xl'>{props.content}</label>
             <input
             onChange={props.handelChange}
