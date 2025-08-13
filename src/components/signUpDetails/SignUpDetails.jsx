@@ -13,6 +13,7 @@ function SignUpDetails() {
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedImages2, setSelectedImages2] = useState({});
   const [loader, setLoader] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   const fileInputRef = useRef(null);
   const categoryRef = useRef(null);
@@ -158,10 +159,9 @@ selectedImages2.identityPic?.forEach((img) => {
     });
   };
 
-  const [categories, setCategories] = useState([]);
   useEffect(() => {
     axios.get('http://localhost:3000/category').then((res) => {
-      setCategories(res.data);
+      setCategories(res.data.categories);
     });
   }, []);
 

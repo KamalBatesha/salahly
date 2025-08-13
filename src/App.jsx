@@ -43,9 +43,9 @@ import TalabatyScreen from './pages/user/talabaty';
 
 
 function App() {
-  // let {userRole,token}=useContext(UserContext)
-  // console.log(userRole,token);
-  let userRole = "user";
+  let {userRole,token}=useContext(UserContext)
+  console.log(userRole,token);
+  // let userRole = "user";
   const userTypes = {
     admin: "admin",
     provider: "provider",
@@ -252,7 +252,7 @@ function App() {
     //   element: <AboutUs />
     // },
     {
-      path:"/ContactUs",
+      path:"/contact-us",
       element:(
         <UserLayout>
           <ContactUs />
