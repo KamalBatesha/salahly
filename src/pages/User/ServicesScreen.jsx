@@ -1,31 +1,104 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown } from 'lucide-react';
 import ServiceDetailsCard from '../../components/serviceDetailsCard';
 import { useNavigate } from 'react-router-dom';
 
 const ServicesScreen = ({ onServiceSelect }) => {
-    const allServices = Array(67).fill(null).map((_, i) => ({
-        id: i + 1,
-        title: 'صيانة مطبخ',
-        provider: 'احمد محمد',
-        price: '500-600',
-        rating: '4.5',
-        reviews: '(123)',
-        image: 'images/avatar.jpg',
-        avatar: 'images/avatar.jpg'
-    }));
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(12);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [services, setServices] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const totalPages = Math.ceil(allServices.length / itemsPerPage);
+    // Fetch categories on component mount
+    useEffect(() => {
+        fetchCategories();
+        // Load all services initially
+        fetchServices();
+    }, []);
+
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch('http://localhost:3000/category');
+            const data = await response.json();
+            
+            // Ensure categories is always an array
+            const categoriesArray = Array.isArray(data) ? data : (data?.categories ? data.categories : []);
+            setCategories(categoriesArray);
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+            setCategories([]);
+        }
+    };
+
+    const fetchServices = async (categoryName = '') => {
+        setLoading(true);
+        try {
+            let url = 'http://localhost:3000/user/getServiceByName';
+            if (categoryName) {
+                url += `?name=${encodeURIComponent(categoryName)}`;
+            }
+            
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            let servicesArray = Array.isArray(data) ? data : (data?.services ? data.services : []);
+            
+            servicesArray = servicesArray.map((service, index) => ({
+                id: service.id || service._id || `service-${index}`,
+                title: service.title || service.name || service.serviceName,
+                provider: service.description || service.providerName || service.user?.name,
+                price: `${service.minPrice} - ${service.maxPrice}` || service.cost,
+                rating: service.rating || service.averageRating || '4.5',
+                reviews: service.reviews || service.reviewCount || '(0)',
+                image: service.image || service.images?.[0] || '/images/avatar.jpg',
+                avatar: service.avatar || service.providerImage || service.user?.image || '/images/avatar.jpg'
+            }));
+            
+            setServices(servicesArray);
+            setCurrentPage(1); 
+        } catch (error) {
+            console.error('Error fetching services:', error);
+            setServices([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSearch = (e) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+        
+        if (value.trim()) {
+            fetchServices(value.trim());
+            setSelectedCategory('');
+        } else {
+            fetchServices();
+            setSelectedCategory('');
+        }
+    };
+
+    const handleCategoryClick = (categoryName) => {
+        setSelectedCategory(categoryName);
+        setSearchTerm('');
+        fetchServices(categoryName);
+    };
+
+    // Navigation handler for service card clicks
+    const handleServiceNavigation = (serviceId) => {
+        navigate(`/serviceDetails/${serviceId}`);
+    };
+
+    const totalPages = Math.ceil((services || []).length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentData = allServices.slice(startIndex, endIndex);
+    const currentData = (services || []).slice(startIndex, endIndex);
 
     const pageOptions = [6, 12, 18];
-
 
     const renderPageButtons = () => {
         const pages = [];
@@ -46,10 +119,10 @@ const ServicesScreen = ({ onServiceSelect }) => {
 
         return pages.map((page, index) =>
             page === '...' ? (
-                <span key={index} className="px-2 py-1 text-sm text-gray-500">...</span>
+                <span key={`ellipsis-${index}`} className="px-2 py-1 text-sm text-gray-500">...</span>
             ) : (
                 <button
-                    key={page}
+                    key={`page-${page}`}
                     onClick={() => setCurrentPage(page)}
                     className={`px-3 py-1 text-sm rounded ${currentPage === page
                         ? 'bg-[#F7F9FB] text-[#25282D] font-semibold'
@@ -72,16 +145,30 @@ const ServicesScreen = ({ onServiceSelect }) => {
                     <div className="w-4/5 flex flex-col">
 
                         {/* Cards */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {currentData.map(service => (
-                                <ServiceDetailsCard
-                                    key={service.id}
-                                    service={service}
-                                    cardStyle="vertical"
-                                    navigation={() => navigate('/serviceDetails')}
-                                />
-                            ))}
-                        </div>
+                        {loading ? (
+                            <div className="flex justify-center items-center h-64">
+                                <div className="text-lg text-gray-600">جاري التحميل...</div>
+                            </div>
+                        ) : (
+                            <div className="flex flex-wrap gap-4 justify-end">
+                                {currentData.map(service => (
+                                    <div key={service.id} className="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.67rem)]">
+                                        <ServiceDetailsCard
+                                            service={service}
+                                            cardStyle="vertical"
+                                            navigation={() => handleServiceNavigation(service.id)}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Show message when no services found */}
+                        {!loading && (!services || services.length === 0) && (
+                            <div className="flex justify-center items-center h-64">
+                                <div className="text-lg text-gray-600">لا توجد خدمات</div>
+                            </div>
+                        )}
 
                         {/* Pagination */}
                         {currentData.length > 0 && (
@@ -89,7 +176,7 @@ const ServicesScreen = ({ onServiceSelect }) => {
                                 {/* Left: Entry Count + Dropdown */}
                                 <div className="relative flex items-center font-semibold gap-2 text-xs text-[#596375]">
                                     <span>
-                                        Showing {startIndex + 1} to {Math.min(endIndex, allServices.length)} of {allServices.length} entries
+                                        Showing {startIndex + 1} to {Math.min(endIndex, (services || []).length)} of {(services || []).length} entries
                                     </span>
 
                                     {/* Dropdown */}
@@ -107,7 +194,7 @@ const ServicesScreen = ({ onServiceSelect }) => {
                                             <div className="absolute bottom-full mb-2 right-0 bg-white rounded-md shadow-md z-10">
                                                 {pageOptions.map((option) => (
                                                     <div
-                                                        key={option}
+                                                        key={`option-${option}`}
                                                         onClick={() => {
                                                             setItemsPerPage(option);
                                                             setCurrentPage(1);
@@ -152,32 +239,29 @@ const ServicesScreen = ({ onServiceSelect }) => {
                     {/* Right: Filters/Search */}
                     <div className="w-1/6 border border-gray-300 rounded-xl px-4 py-2 flex flex-col gap-3 ml-8 max-h-[500px] overflow-y-auto">
 
-
                         {/* Search */}
                         <input
                             type="text"
                             placeholder="البحث..."
+                            value={searchTerm}
+                            onChange={handleSearch}
                             className="w-full border-2 border-gray-300 rounded-lg px-2 py-2 mt-6 text-right mb-4"
                         />
 
-                        {/* Filter Inputs */}
+                        {/* Filter Inputs - Dynamic categories from API */}
                         <div className="grid grid-cols-1 gap-3">
-                            {[
-                                { icon: '/images/icons/bib.png', label: 'ميكانيكي' },
-                                { icon: '/images/icons/flashlight.png', label: 'كهرباء' },
-                                { icon: '/images/icons/shovel.png', label: 'حفر' },
-                                { icon: '/images/icons/wrench.png', label: 'سباكة' },
-                                { icon: '/images/icons/brush.png', label: 'نقاشه' },
-                                { icon: '/images/icons/tool-box.png', label: 'صيانه' },
-                            ].map((filter, index) => (
+                            {categories.map((category) => (
                                 <div
-                                    key={index}
-                                    className="flex items-center gap-2 flex-row-reverse text-right px-4 py-2 border border-gray-300 rounded-2xl cursor-pointer hover:bg-gray-100"
+                                    key={`category-${category.id || category.name}`}
+                                    onClick={() => handleCategoryClick(category.name)}
+                                    className={`flex items-center gap-2 flex-row-reverse text-right px-4 py-2 border border-gray-300 rounded-2xl cursor-pointer hover:bg-gray-100 ${
+                                        selectedCategory === category.name ? 'bg-gray-100' : ''
+                                    }`}
                                 >
-                                    <img src={filter.icon} alt={filter.label} className="w-5 h-7" />
-                                    <span className="text-sm font-bold text-[#25282D]">{filter.label}</span>
-
-
+                                    {category.icon && (
+                                        <img src={category.icon} alt={category.name} className="w-5 h-7" />
+                                    )}
+                                    <span className="text-sm font-bold text-[#25282D]">{category.name}</span>
                                 </div>
                             ))}
                         </div>
