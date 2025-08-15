@@ -29,7 +29,7 @@ const Navbar = () => {
             <NavLink to="/" className={linkClasses}>
               الرئيسية
             </NavLink>
-            <NavLink to="/services" className={linkClasses}>
+            <NavLink to="/userservices" className={linkClasses}>
               الخدمات
             </NavLink>
             <NavLink to="/about" className={linkClasses}>

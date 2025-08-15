@@ -161,7 +161,7 @@ selectedImages2.identityPic?.forEach((img) => {
   const [categories, setCategories] = useState([]);
   useEffect(() => {
     axios.get('http://localhost:3000/category').then((res) => {
-      setCategories(res.data);
+      setCategories(res.data.categories);
     });
   }, []);
 
