@@ -3,18 +3,12 @@
 import React from "react";
 
 const services = [
-  { icon: "/icons/light-transport.png", label: "نقل خفيف" },
-  { icon: "/icons/mechanic.png", label: "ميكانيكى" },
-  { icon: "/icons/tailor.png", label: "خياطه" },
-  { icon: "/icons/carpet.png", label: "تجديد سجاد" },
-  { icon: "/icons/drill.png", label: "حفر" },
-  { icon: "/icons/painting.png", label: "نقاشه" },
-  { icon: "/icons/furniture.png", label: "نقل العفش" },
-  { icon: "/icons/carpenter.png", label: "نجار مسلح" },
-  { icon: "/icons/aluminum.png", label: "نجار الألوميتال" },
-  { icon: "/icons/welder.png", label: "اللحام" },
-  { icon: "/icons/elevator.png", label: "فنى مصاعد" },
-  { icon: "/icons/repair.png", label: "لترميم" },
+  { icon: "/images/mechanic.png", label: "ميكانيكى" },
+  { icon: "/images/plumber.png", label: "حفر" },
+  { icon: "/images/nekasha.png", label: "نقاشه" },
+  { icon: "/images/carpenter.png", label: "نجار مسلح" },
+  { icon: "/images/tiler.png", label: "نجار الألوميتال" },
+  { icon: "/images/electrician.png", label: "اللحام" },
 ];
 
 export default function OurServices() {

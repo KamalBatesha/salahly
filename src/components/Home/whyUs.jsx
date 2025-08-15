@@ -29,30 +29,30 @@ export default function WhyUseSahlly() {
         <div className="w-full md:w-1/2">
           <div className="rounded-[40px] overflow-hidden">
             <img
-              src="/images/sanay3yHome.png" 
+              src="/images/sanay3yHome.png"
               alt="فني صيانة"
-              className="w-full h-auto object-cover"
+              className="w-[90%] h-auto object-cover"
             />
           </div>
         </div>
 
         {/* Right Content */}
-        <div className="w-full md:w-1/2 text-right">
+        <div className="w-full md:w-1/2 text-right ">
           <h2 className="text-2xl md:text-3xl font-bold text-blue-800 mb-8">
             ليه تستخدم "صلحلي"؟
           </h2>
 
-          <div className="space-y-6">
+          <div className="space-y-10">
             {benefits.map((item, idx) => (
               <div
                 key={idx}
-                className="border rounded-xl p-4 flex items-start gap-4"
+                className="border border-[var(--color-main-500)] rounded-xl p-4 flex items-start gap-6 flex-row-reverse"
               >
-                <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-sm">
+                <div className="w-12 h-12 rounded-full bg-[#E6EDF7] text-main-500 font-semibold flex items-center justify-center text-2xl">
                   {item.number}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-base mb-1">{item.title}</h3>
+                  <h3 className="font-semibold text-xl mb-1">{item.title}</h3>
                   <p className="text-sm text-gray-600">{item.description}</p>
                 </div>
               </div>

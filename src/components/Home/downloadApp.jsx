@@ -7,7 +7,7 @@ export default function DownloadApp() {
         {/* Left - Phones Image */}
         <div className="w-full md:w-1/2 flex justify-center">
           <img
-            src="/images/appImg.png" // ضع الصورة المجمعة هنا
+            src="/images/appImg.png"
             alt="تطبيق صلحلي"
             className="w-full max-w-md"
           />
