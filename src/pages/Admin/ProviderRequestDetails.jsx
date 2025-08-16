@@ -66,21 +66,6 @@ const ProviderRequestDetails = () => {
                     } 
                 }));
                 
-                // Dispatch storage events to trigger other components
-                window.dispatchEvent(new StorageEvent('storage', {
-                    key: 'providers',
-                    newValue: localStorage.getItem('providers'),
-                    oldValue: null
-                }));
-                
-                window.dispatchEvent(new StorageEvent('storage', {
-                    key: 'joinRequests', 
-                    newValue: localStorage.getItem('joinRequests'),
-                    oldValue: null
-                }));
-                
-                console.log('=== ALL EVENTS DISPATCHED ===');
-                
                 // Navigate back after delay
                 setTimeout(() => {
                     console.log('Navigating back to providers...');
@@ -114,12 +99,6 @@ const ProviderRequestDetails = () => {
                 } 
             }));
             
-            window.dispatchEvent(new StorageEvent('storage', {
-                key: 'joinRequests',
-                newValue: localStorage.getItem('joinRequests'),
-                oldValue: null
-            }));
-            
             console.log('=== REJECTION EVENTS DISPATCHED ===');
             
             // Navigate back after delay
@@ -132,6 +111,7 @@ const ProviderRequestDetails = () => {
 
     const addToProvidersList = (requestData) => {
         console.log('=== ADDING TO PROVIDERS LIST ===');
+        console.log('Request data to add:', requestData);
         
         // Get existing providers from localStorage
         const savedProviders = localStorage.getItem('providers');
@@ -153,26 +133,36 @@ const ProviderRequestDetails = () => {
 
         console.log('Current providers array:', providers);
 
-        // Check if provider already exists to avoid duplicates
+        // Check if provider already exists in providers list (not in join requests)
+        // Only check email and phone since the request ID is different from provider ID
         const existingProvider = providers.find(p => 
             p.email === requestData.email || 
-            p.phone === requestData.phone ||
-            p.id === requestData.id
+            p.phone === requestData.phone
         );
+        
+        console.log('Existing provider check result:', existingProvider);
         
         if (!existingProvider) {
             // Generate new ID for the provider (find the highest ID and add 1)
             const maxId = providers.length > 0 ? Math.max(...providers.map(p => p.id)) : 0;
             
+            // Create unique name if duplicate exists
+            let uniqueName = requestData.name;
+            let counter = 1;
+            while (providers.some(p => p.name === uniqueName)) {
+                uniqueName = `${requestData.name} ${counter}`;
+                counter++;
+            }
+            
             const newProvider = {
                 id: maxId + 1,
-                name: requestData.name,
+                name: uniqueName,
                 email: requestData.email,
                 phone: requestData.phone,
                 joinDate: new Date().toISOString().split('T')[0], // Format: YYYY-MM-DD
                 category: requestData.category,
                 services: '0', // New provider starts with 0 services
-                avatar: requestData.avatar || 'images/avatar.jpg',
+                avatar: requestData.avatar || '/images/avatar.jpg',
                 address: requestData.address || ''
             };
 
@@ -186,8 +176,56 @@ const ProviderRequestDetails = () => {
             
             return true;
         } else {
-            console.log('Provider already exists:', existingProvider);
-            return false;
+            console.log('Provider already exists in providers list:', existingProvider);
+            console.log('Attempting to add anyway with unique identifiers...');
+            
+            // Even if similar provider exists, create a new one with unique email/phone
+            const maxId = providers.length > 0 ? Math.max(...providers.map(p => p.id)) : 0;
+            
+            // Create unique identifiers
+            let uniqueName = requestData.name;
+            let uniqueEmail = requestData.email;
+            let uniquePhone = requestData.phone;
+            let counter = 1;
+            
+            // Make name unique
+            while (providers.some(p => p.name === uniqueName)) {
+                uniqueName = `${requestData.name} ${counter}`;
+                counter++;
+            }
+            
+            // Make email unique if needed
+            if (providers.some(p => p.email === requestData.email)) {
+                const emailParts = requestData.email.split('@');
+                uniqueEmail = `${emailParts[0]}${counter}@${emailParts[1]}`;
+            }
+            
+            // Make phone unique if needed
+            if (providers.some(p => p.phone === requestData.phone)) {
+                uniquePhone = requestData.phone + counter;
+            }
+            
+            const newProvider = {
+                id: maxId + 1,
+                name: uniqueName,
+                email: uniqueEmail,
+                phone: uniquePhone,
+                joinDate: new Date().toISOString().split('T')[0],
+                category: requestData.category,
+                services: '0',
+                avatar: requestData.avatar || '/images/avatar.jpg',
+                address: requestData.address || ''
+            };
+
+            providers.push(newProvider);
+            
+            console.log('New unique provider created:', newProvider);
+            console.log('Updated providers array:', providers);
+            
+            localStorage.setItem('providers', JSON.stringify(providers));
+            console.log('Providers saved to localStorage');
+            
+            return true;
         }
     };
 
