@@ -36,14 +36,14 @@ const JoinedProviderDetails = () => {
             }
 
             const apiData = await response.json();
-            
+
             // Find the specific provider by ID
             const provider = apiData.find(p => p._id === providerId);
-            
+
             if (!provider) {
                 throw new Error('Provider not found');
             }
-            
+
             // Map API data to component format
             const mappedProvider = {
                 id: provider._id,
@@ -59,7 +59,7 @@ const JoinedProviderDetails = () => {
                 idFront: provider.identityPic && provider.identityPic[1] ? provider.identityPic[1].secure_url : '/images/front-id.png',
                 idBack: provider.identityPic && provider.identityPic[0] ? provider.identityPic[0].secure_url : '/images/back-id.png',
                 portfolio: provider.portfolio || [],
-                workingHours: provider.workingHours || getDefaultWorkingHours()
+                workingHours: provider.workingHours || getDefaultWorkingHours(),
             };
 
             setProviderData(mappedProvider);
@@ -104,13 +104,13 @@ const JoinedProviderDetails = () => {
 
                 if (response.ok) {
                     // Dispatch event to update providers list
-                    window.dispatchEvent(new CustomEvent('dataUpdated', { 
-                        detail: { 
-                            type: 'provider_deleted', 
-                            providerId: providerData.id 
-                        } 
+                    window.dispatchEvent(new CustomEvent('dataUpdated', {
+                        detail: {
+                            type: 'provider_deleted',
+                            providerId: providerData.id
+                        }
                     }));
-                    
+
                     setTimeout(() => {
                         navigate("/providers");
                     }, 1000);
@@ -136,7 +136,7 @@ const JoinedProviderDetails = () => {
         return (
             <div className="p-6 text-center">
                 <p className="text-red-600">{error}</p>
-                <button 
+                <button
                     onClick={() => navigate("/providers")}
                     className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
@@ -268,28 +268,27 @@ const JoinedProviderDetails = () => {
                                 </div>
 
                             </div>
-                            <div className="flex items-start gap-4 mb-6 rounded-xl border-1  border-[#E1E1E1] p-5 w-full">
+                            <div className="flex items-start gap-4 mb-6 rounded-xl border border-[#E1E1E1] p-5 w-full h-[530px]">
                                 <div className="flex-1">
                                     <div className="flex justify-between px-2">
                                         <h3 className="text-lg font-bold mb-1">الخدمات</h3>
-                                        <span className="text-sm text-left mb-1">المزيد {providerData.services}</span>
+                                        <span className="text-sm text-left mb-1">
+                                            المزيد {providerData.services?.length || 0}
+                                        </span>
                                     </div>
 
-                                    <div className="space-y-4 mt-2">
-                                        {/* This would be replaced with actual services from API when available */}
-                                        {providerData.services > 0 ? (
-                                            // You can map actual services here when they're available in the API
-                                            <div className="text-center py-8">
-                                                <p className="text-gray-500">عدد الخدمات: {providerData.services}</p>
-                                            </div>
-                                        ) : (
-                                            <div className="text-center py-8">
-                                                <p className="text-gray-500">لا توجد خدمات مضافة بعد</p>
-                                            </div>
-                                        )}
-                                    </div>
+                                   <div className="text-center mt-40 px-10">
+                                            <h2 className="text-xl font-bold mb-2">
+                                                {providerData?.name || "المزود"} ليس صنايعى حاليا
+                                            </h2>
+                                            <p className="text-lg font-medium">
+                                                راجع بيانات {providerData?.name || "المزود"} المقدمه من تاريخ{" "}
+                                                {providerData?.requestDate || "غير محدد"} لكى يستطيع اضافه خدمات
+                                            </p>
+                                        </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

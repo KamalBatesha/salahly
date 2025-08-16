@@ -57,7 +57,8 @@ const ProviderRequestDetails = () => {
                 idFront: request.identityPic && request.identityPic[0] ? request.identityPic[0].secure_url : '/images/front-id.png',
                 idBack: request.identityPic && request.identityPic[1] ? request.identityPic[1].secure_url : '/images/back-id.png',
                 portfolio: request.portfolio || [],
-                workingHours: request.workingHours || getDefaultWorkingHours()
+                workingHours: request.workingHours || getDefaultWorkingHours(),
+                services: provider.workshops || [],
             };
 
             setRequestData(mappedRequest);
@@ -390,17 +391,25 @@ const ProviderRequestDetails = () => {
                                 </div>
 
                             </div>
-                            <div className="flex items-start gap-4 mb-6 rounded-xl border-1  border-[#E1E1E1] p-5 w-full h-[530px]">
+                            <div className="flex items-start gap-4 mb-6 rounded-xl border border-[#E1E1E1] p-5 w-full h-[530px]">
                                 <div className="flex-1">
                                     <div className="flex justify-between px-2">
                                         <h3 className="text-lg font-bold mb-1">الخدمات</h3>
+                                        <span className="text-sm text-left mb-1">المزيد {requestData?.services?.length || 0}</span>
                                     </div>
-                                    <div className='text-center mt-40 px-10'>
-                                        <h2 className='text-xl font-bold mb-2'>{requestData?.name || 'المزود'} ليس صنايعى حاليا</h2>
-                                        <p className='text-lg font-medium'>راجع بيانات {requestData?.name || 'المزود'} المقدمه من تاريخ {requestData?.requestDate || 'غير محدد'} لكى يستطيع اضافه خدمات </p>
-                                    </div>
+
+                                    <div className="text-center mt-40 px-10">
+                                            <h2 className="text-xl font-bold mb-2">
+                                                {requestData?.name || "المزود"} ليس صنايعى حاليا
+                                            </h2>
+                                            <p className="text-lg font-medium">
+                                                راجع بيانات {requestData?.name || "المزود"} المقدمه من تاريخ{" "}
+                                                {requestData?.requestDate || "غير محدد"} لكى يستطيع اضافه خدمات
+                                            </p>
+                                        </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
