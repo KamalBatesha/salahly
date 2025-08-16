@@ -9,143 +9,91 @@ const Providers = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedProviders, setSelectedProviders] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [providers, setProviders] = useState([]);
+    const [joinRequests, setJoinRequests] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    const defaultProviders = [
-        {
-            id: 1,
-            name: 'محمد علي',
-            email: 'mohamed@example.com',
-            phone: '01012345678',
-            joinDate: '2024-10-01',
-            category: 'كهرباء',
-            services: '3',
-            avatar: '/images/avatar.jpg',
-            address: 'القاهرة'
-        },
-        {
-            id: 2,
-            name: 'أحمد حسن',
-            email: 'ahmed@example.com',
-            phone: '01098765432',
-            joinDate: '2024-10-03',
-            category: 'سباكه',
-            services: '5',
-            avatar: '/images/avatar.jpg',
-            address: 'الجيزة'
-        },
-        {
-            id: 3,
-            name: 'سعيد محمود',
-            email: 'saeed@example.com',
-            phone: '01011112222',
-            joinDate: '2024-10-05',
-            category: 'نجاره',
-            services: '2',
-            avatar: '/images/avatar.jpg',
-            address: 'الإسكندرية'
-        },
-        {
-            id: 4,
-            name: 'مروان فاروق',
-            email: 'marwan@example.com',
-            phone: '01022223333',
-            joinDate: '2024-10-07',
-            category: 'صيانة',
-            services: '4',
-            avatar: '/images/avatar.jpg',
-            address: 'طنطا'
+    // Function to map API profession ID to Arabic category name
+    const mapProfessionToCategory = (professionId) => {
+        // You can create a mapping based on your profession IDs
+        const professionMap = {
+            '6899edafd8e21a7315b23ad7': 'نقاشه',
+            // Add more mappings as needed
+        };
+        return professionMap[professionId] || 'عام';
+    };
+
+    // Function to fetch providers from API
+    const fetchProviders = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const token = localStorage.getItem('access_token'); 
+            const response = await fetch('http://localhost:3000/admin/getAllProviders', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `admin ${token}`,
+
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const apiData = await response.json();
+            
+            // Map API data to component format
+            const mappedProviders = [];
+            const mappedRequests = [];
+
+            apiData.forEach((provider, index) => {
+                const mappedProvider = {
+                    id: provider._id,
+                    name: provider.name,
+                    email: provider.email,
+                    phone: provider.phone,
+                    joinDate: new Date(provider.createdAt).toISOString().split('T')[0],
+                    requestDate: new Date(provider.createdAt).toISOString().split('T')[0],
+                    category: mapProfessionToCategory(provider.profession),
+                    services: provider.workshops ? provider.workshops.length.toString() : '0',
+                    avatar: provider.profilePic?.secure_url || '/images/avatar.jpg',
+                    address: provider.address,
+                    action: provider.confirmed === 'pending' ? 'المعلقه' : 'confirmed'
+                };
+
+                // Separate confirmed and pending providers
+                if (provider.confirmed === 'confirmed') {
+                    mappedProviders.push(mappedProvider);
+                } else if (provider.confirmed === 'pending') {
+                    mappedRequests.push(mappedProvider);
+                }
+            });
+
+            setProviders(mappedProviders);
+            setJoinRequests(mappedRequests);
+        } catch (error) {
+            console.error('Error fetching providers:', error);
+            setError('فشل في تحميل البيانات');
+        } finally {
+            setLoading(false);
         }
-    ];
+    };
 
-    const [providers, setProviders] = useState(() => {
-        const savedProviders = localStorage.getItem('providers');
-        return savedProviders ? JSON.parse(savedProviders) : defaultProviders;
-    });
-
-
-
-    const defaultJoinRequests = [
-        {
-            id: 101,
-            name: 'إبراهيم شوقي',
-            email: 'ibrahim@example.com',
-            phone: '01110001100',
-            requestDate: '2024-10-10',
-            category: 'نقاشه',
-            avatar: '/images/avatar.jpg',
-            address: 'أسوان',
-            action: 'المعلقه'
-        },
-        {
-            id: 102,
-            name: 'نبيل عبد الله',
-            email: 'lamiya@example.com',
-            phone: '01220002200',
-            requestDate: '2024-10-12',
-            category: 'كهرباء',
-            avatar: '/images/avatar.jpg',
-            address: 'المنصورة',
-            action: 'المعلقه'
-        },
-        {
-            id: 103,
-            name: 'ياسر منصور',
-            email: 'yasser@example.com',
-            phone: '01130003300',
-            requestDate: '2024-10-14',
-            category: 'صيانة',
-            avatar: '/images/avatar.jpg',
-            address: 'سوهاج',
-            action: 'المعلقه'
-        },
-        {
-            id: 104,
-            name: 'ياسر نبيل',
-            email: 'yasser@example.com',
-            phone: '01240004400',
-            requestDate: '2024-10-16',
-            category: 'سباكه',
-            avatar: '/images/avatar.jpg',
-            address: 'بني سويف',
-            action: 'المعلقه'
-        }
-    ];
-
-    const [joinRequests, setJoinRequests] = useState(() => {
-        const savedRequests = localStorage.getItem('joinRequests');
-        if (savedRequests) {
-            const requests = JSON.parse(savedRequests);
-            const existingEmails = requests.map(r => r.email);
-            const combined = [
-                ...requests,
-                ...defaultJoinRequests.filter(r => !existingEmails.includes(r.email))
-            ];
-            return combined.filter(r => r.action === 'المعلقه');
-        }
-        return defaultJoinRequests;
-    });
-
+    useEffect(() => {
+        fetchProviders();
+    }, []);
 
     useEffect(() => {
         const reloadData = () => {
-            const savedProviders = localStorage.getItem('providers');
-            if (savedProviders) {
-                setProviders(JSON.parse(savedProviders));
-            }
-
-            const savedRequests = localStorage.getItem('joinRequests');
-            if (savedRequests) {
-                const requests = JSON.parse(savedRequests);
-
-                // ✅ Only keep requests with action === 'المعلقه'
-                const filteredRequests = requests.filter(req => req.action === 'المعلقه');
-                setJoinRequests(filteredRequests);
-            }
+            fetchProviders();
         };
-        reloadData();
+        
         window.addEventListener('focus', reloadData);
 
-        // 🔽 Add this to listen to custom "dataUpdated" events
+        // Add this to listen to custom "dataUpdated" events
         const handleDataUpdated = (e) => {
             if (e.detail?.type === 'provider_rejected' || e.detail?.type === 'provider_accepted') {
                 reloadData();
@@ -158,23 +106,6 @@ const Providers = () => {
             window.removeEventListener('dataUpdated', handleDataUpdated);
         };
     }, []);
-
-
-    useEffect(() => {
-        localStorage.setItem('providers', JSON.stringify(providers));
-    }, [providers]);
-
-
-
-    useEffect(() => {
-        const allRequests = localStorage.getItem('joinRequests');
-        if (allRequests) {
-            const requests = JSON.parse(allRequests);
-            const nonPending = requests.filter(request => request.action !== 'المعلقه');
-            const updated = [...nonPending, ...joinRequests];
-            localStorage.setItem('joinRequests', JSON.stringify(updated));
-        }
-    }, [joinRequests]);
 
     const handleCheckboxChange = (id) => {
         setSelectedProviders(prev =>
@@ -196,6 +127,7 @@ const Providers = () => {
             'نجاره': '/images/icons/flat.png',
             'سباكه': '/images/icons/pipe-wrench.png',
             'نقاشه': '/images/icons/brush.png',
+            'عام': '/images/icons/flat.png',
         };
         return <img src={icons[category] || '/images/icons/flat.png'} alt={category} className="w-6 h-6" />;
     };
@@ -206,10 +138,8 @@ const Providers = () => {
         if (window.confirm('هل أنت متأكد من حذف هذا المزود؟')) {
             const updated = providers.filter(p => p.id !== id);
             setProviders(updated);
-            localStorage.setItem('providers', JSON.stringify(updated));
         }
     };
-
 
     const handleEdit = (id) => {
         alert(`تعديل المزود رقم ${id}`);
@@ -314,6 +244,28 @@ const Providers = () => {
         }
     };
 
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <div className="text-lg text-gray-600">جاري تحميل البيانات...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <div className="text-lg text-red-600">{error}</div>
+                <button 
+                    onClick={fetchProviders}
+                    className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                    إعادة المحاولة
+                </button>
+            </div>
+        );
+    }
+
     return (
         <div>
             {/* Page Title */}
@@ -330,7 +282,7 @@ const Providers = () => {
                             : 'text-[#B0B0B0] font-semibold hover:text-gray-700 bg-white shadow-inner'
                             }`}
                     >
-                        المسجلين
+                        المسجلين 
                     </button>
                     <button
                         onClick={() => setActiveTab('requests')}
@@ -339,7 +291,7 @@ const Providers = () => {
                             : 'text-[#B0B0B0] font-semibold hover:text-gray-700 bg-white shadow-inner'
                             }`}
                     >
-                        طلبات انضمام
+                        طلبات انضمام 
                     </button>
                 </div>
 
@@ -456,9 +408,11 @@ const Providers = () => {
                     </table>
                 </div>
 
-                {currentData.length === 0 && (
+                {currentData.length === 0 && !loading && (
                     <div className="text-center py-8">
-                        <p className="text-gray-500">لا توجد نتائج للبحث "{searchTerm}"</p>
+                        <p className="text-gray-500">
+                            {searchTerm ? `لا توجد نتائج للبحث "${searchTerm}"` : 'لا توجد بيانات'}
+                        </p>
                     </div>
                 )}
 
