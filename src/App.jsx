@@ -156,6 +156,12 @@ function App() {
         ) : (
           <Navigate to="/" replace />
         ),
+      path: "/serviceDetails/:serviceId",
+      element: userRole == userTypes.user ? (
+        <UserLayout>
+          <ServiceDetailsScreen />
+        </UserLayout>
+      ) : <Navigate to="/" replace />,
     },
     {
       path: "/bookingPopups",

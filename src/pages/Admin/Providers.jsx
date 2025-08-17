@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search , ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -14,31 +14,28 @@ const Providers = () => {
     const [joinRequests, setJoinRequests] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [itemsPerPage, setItemsPerPage] = useState(5);
 
-    // Function to map API profession ID to Arabic category name
     const mapProfessionToCategory = (professionId) => {
-        // You can create a mapping based on your profession IDs
         const professionMap = {
             '6899edafd8e21a7315b23ad7': 'نقاشه',
-            // Add more mappings as needed
         };
         return professionMap[professionId] || 'عام';
     };
 
-    // Function to fetch providers from API
     const fetchProviders = async () => {
         setLoading(true);
         setError(null);
         try {
-            const token = localStorage.getItem('access_token'); // Assuming you store the auth token
+            const token = localStorage.getItem('access_token');
             const response = await fetch('http://localhost:3000/admin/getAllProviders', {
                 method: 'GET',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                     'authorization': `admin ${token}`,
+
                 },
             });
-            console.log(response);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -114,6 +111,8 @@ const Providers = () => {
         );
     };
 
+
+
     const handleSelectAll = () => {
         const currentData = activeTab === 'registered' ? filteredProviders : filteredJoinRequests;
         setSelectedProviders(
@@ -181,6 +180,21 @@ const Providers = () => {
     );
 
     const currentData = activeTab === 'registered' ? filteredProviders : filteredJoinRequests;
+
+    // --- Pagination Logic ---
+    const totalItems = providers.length;
+    const totalPages = Math.ceil(currentData.length / itemsPerPage);
+
+    const paginatedData = currentData.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const startIndex = (currentPage - 1) * itemsPerPage + 1;
+    const endIndex = Math.min(currentPage * itemsPerPage, currentData.length);
+
+
+
 
     const getActionButton = (item) => {
         if (activeTab === 'requests') {
@@ -346,7 +360,7 @@ const Providers = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {currentData.map((item) => (
+                            {paginatedData.map((item) => (
                                 <tr
                                     key={item.id}
                                     className="hover:bg-gray-50 cursor-pointer"
@@ -419,7 +433,10 @@ const Providers = () => {
 
                 {currentData.length > 0 && (
                     <div className="bg-white px-6 py-3 pt-8 mb-10 flex items-center justify-between border-t border !border-b-0 border-gray-200">
+
+                        {/* Pagination Buttons */}
                         <div className="flex items-center gap-1">
+                            {/* Prev Button */}
                             <button
                                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                                 className="px-1 py-1 text-sm border border-gray-300 rounded-lg hover:bg-[#E0E4EE] disabled:opacity-50"
@@ -427,41 +444,103 @@ const Providers = () => {
                             >
                                 <ChevronRight size={16} />
                             </button>
-                            {[1, 2, 3, 4].map((page) => (
-                                <button
-                                    key={page}
-                                    onClick={() => setCurrentPage(page)}
-                                    className={`px-3 py-1 text-sm rounded ${currentPage === page
-                                        ? 'bg-[#E0E4EE] text-[#25282D] font-semibold'
-                                        : 'border-gray-300 text-[#25282D] hover:bg-gray-100'}`}
-                                >
-                                    {page}
-                                </button>
-                            ))}
-                            <span className="px-2 py-1 text-sm text-[#25282D] font-semibold">...</span>
+
+                            {/* Page Numbers with Dots */}
+                            {(() => {
+                                const pages = [];
+
+                                if (totalPages <= 7) {
+                                    // show all pages if few
+                                    for (let i = 1; i <= totalPages; i++) {
+                                        pages.push(i);
+                                    }
+                                } else {
+                                    // Always show first
+                                    pages.push(1);
+
+                                    if (currentPage > 3) {
+                                        pages.push("dots-start");
+                                    }
+
+                                    // Middle pages around current
+                                    for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+                                        if (i > 1 && i < totalPages) {
+                                            pages.push(i);
+                                        }
+                                    }
+
+                                    if (currentPage < totalPages - 2) {
+                                        pages.push("dots-end");
+                                    }
+
+                                    // Always show last
+                                    pages.push(totalPages);
+                                }
+
+                                return pages.map((page, index) =>
+                                    page === "dots-start" || page === "dots-end" ? (
+                                        <span key={index} className="px-2 py-1 text-sm">
+                                            ...
+                                        </span>
+                                    ) : (
+                                        <button
+                                            key={page}
+                                            onClick={() => setCurrentPage(page)}
+                                            className={`px-3 py-1 text-sm rounded ${currentPage === page
+                                                ? "bg-[#E0E4EE] text-[#25282D] font-semibold"
+                                                : "border-gray-300 text-[#25282D] hover:bg-gray-100"
+                                                }`}
+                                        >
+                                            {page}
+                                        </button>
+                                    )
+                                );
+                            })()}
+
+                            {/* Next Button */}
                             <button
-                                onClick={() => setCurrentPage(10)}
-                                className={`px-3 py-1 text-sm rounded ${currentPage === 10
-                                    ? 'bg-[#E0E4EE] text-[#25282D] font-semibold'
-                                    : 'border-gray-300 text-[#25282D] hover:bg-gray-100'}`}
-                            >
-                                10
-                            </button>
-                            <button
-                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, 10))}
+                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                                 className="px-1 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50"
-                                disabled={currentPage === 10}
+                                disabled={currentPage === totalPages}
                             >
                                 <ChevronLeft size={16} />
                             </button>
                         </div>
+
+                        {/* Entries Count + Dropdown */}
+                    
                         <div className="flex items-center gap-2">
+                            <div className="relative">
+                                <select
+                                    value={itemsPerPage}
+                                    onChange={(e) => {
+                                        setItemsPerPage(Number(e.target.value));
+                                        setCurrentPage(1);
+                                    }}
+                                    className="appearance-none border-2 border-[#E0E4EE] rounded-lg text-sm px-3 py-1 pr-8 bg-white cursor-pointer"
+                                >
+                                    <option value={5}>5 Show</option>
+                                    <option value={10}>10 Show</option>
+                                    <option value={20}>20 Show</option>
+                                </select>
+
+                                {/* Custom ChevronDown icon on the right */}
+                                <ChevronDown
+                                    size={16}
+                                    className="absolute right-2 top-1/2 mt-1 -translate-y-1/2 text-gray-500 pointer-events-none"
+                                />
+                            </div>
+
                             <span className="text-sm text-[#596375]">
-                                Showing 1 to {currentData.length} of {currentData.length} entries
+                                Showing {startIndex} to {endIndex} of {totalItems} entries
                             </span>
                         </div>
+
+
                     </div>
                 )}
+
+
             </div>
         </div>
     );
