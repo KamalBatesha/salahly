@@ -10,8 +10,8 @@ export const Sidebar = ({ isOpen }) => {
         { id: 'statistics', icon: 'service-provider-filled.png', activeIcon: 'service-provider.png', label: 'الصنايعية', path: '/providers' },
         { id: 'students', icon: 'clients-filled.png', activeIcon: 'clients.png', label: 'العملاء', path: '/clients' },
         { id: 'applications', icon: 'menu-board-filled.png', activeIcon: 'menu-board.png', label: 'الطلبات', path: '/orders' },
-        { id: 'reports', icon: 'category-filled.png', activeIcon: 'category.png', label: 'تخصص', path: '/services' },
-        { id: 'reports', icon: 'services.png', activeIcon: 'services-outline.png', label: 'خدمات', path: '/categories' },
+        { id: 'reports', icon: 'category-filled.png', activeIcon: 'category.png', label: 'تخصص', path: '/categories' },
+        { id: 'reports', icon: 'services.png', activeIcon: 'services-outline.png', label: 'خدمات', path: '/services' },
         { id: 'reports', icon: 'message-filled.png', activeIcon: 'message-outline.png', label: 'الرسائل', path: '/messages' },
     ];
 
