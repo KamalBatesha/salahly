@@ -1,69 +1,15 @@
 import { Grid2x2Plus, MoreVertical, Search } from "lucide-react";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import image from "../../assets/image.png";
+import axios from "axios";
+import { UserContext } from "../../context/UserContext";
 
 const Categories = () => {
   const fileInputRef = useRef(null);
+  const { token } = useContext(UserContext);
 
 
-  const [categories, setCategories] = useState([
-    {
-      id: 1,
-      name: "نقاشه",
-      icon: "/images/nekasha.png",
-      servicesCount: 50,
-      workersCount: 50,
-    },
-    {
-      id: 2,
-      name: "كهربائي",
-      icon: "./images/electrician.png",
-      servicesCount: 40,
-      workersCount: 35,
-    },
-    {
-      id: 3,
-      name: "سباكة",
-      icon: "/images/plumber.png",
-      servicesCount: 30,
-      workersCount: 25,
-    },
-    {
-      id: 4,
-      name: "نجارة",
-      icon: "/images/carpenter.png",
-      servicesCount: 20,
-      workersCount: 18,
-    },
-    {
-      id: 5,
-      name: "دهان",
-      icon: "/images/nekasha.png",
-      servicesCount: 15,
-      workersCount: 12,
-    },
-    {
-      id: 6,
-      name: "حداد",
-      icon: "/images/blacksmith.png",
-      servicesCount: 10,
-      workersCount: 8,
-    },
-    {
-      id: 7,
-      name: "ميكانيكي",
-      icon: "/images/mechanic.png",
-      servicesCount: 22,
-      workersCount: 20,
-    },
-    {
-      id: 8,
-      name: "مبلط",
-      icon: "/images/tiler.png",
-      servicesCount: 18,
-      workersCount: 15,
-    },
-  ]);
+  const [categories, setCategories] = useState([]);
 
   const [showWithdrawPopup, setShowWithdrawPopup] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -81,22 +27,67 @@ const Categories = () => {
   };
 
   // إضافة تخصص جديد
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     if (!newCategoryName || selectedImages.length === 0) return;
 
-    const newCategory = {
-      id: categories.length + 1,
-      name: newCategoryName,
-      icon: selectedImages[0].preview, // أول صورة مختارة
-      servicesCount: 0,
-      workersCount: 0,
-    };
+    // const newCategory = {
+    //   id: categories.length + 1,
+    //   name: newCategoryName,
+    //   icon: selectedImages[0].preview, // أول صورة مختارة
+    //   servicesCount: 0,
+    //   workersCount: 0,
+    // };
 
-    setCategories((prev) => [...prev, newCategory]);
+    // setCategories((prev) => [...prev, newCategory]);
+    await addCategory(newCategoryName, selectedImages[0].file);
     setNewCategoryName("");
     setSelectedImages([]);
     setShowWithdrawPopup(false);
   };
+  async function getAllCategories() {
+    axios
+      .get("http://localhost:3000/category")
+      .then((res) => {
+        console.log(res.data);
+        
+      const apiCategories = res.data.categories.map((category) => ({
+        id: category._id,
+        name: category.title,
+        icon: category.image.secure_url,
+        servicesCount: category.servicesCount,
+        workersCount: category.providerCount
+      }));
+
+      setCategories(apiCategories);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  function addCategory(name, imageFile) {
+  const formData = new FormData();
+  formData.append("title", name);
+  formData.append("image", imageFile);
+
+  axios
+    .post("http://localhost:3000/category", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        "authorization": `admin ${token}`,
+      },
+    })
+    .then((res) => {
+      console.log(res.data);
+      getAllCategories();
+    })
+    .catch((err) => {
+      console.log(err.response?.data || err.message);
+    });
+}
+
+  useEffect(() => {
+    getAllCategories();
+  }, []);
 
   return (
     <div>
@@ -222,7 +213,7 @@ const Categories = () => {
       {/* Cards */}
       <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {categories.map((service) => (
+          {categories.length > 0 && categories.map((service) => (
             <div
               key={service.id}
               className="relative rounded-xl shadow-sm bg-white flex justify-between items-center p-4"
