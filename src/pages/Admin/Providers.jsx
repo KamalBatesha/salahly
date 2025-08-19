@@ -162,7 +162,7 @@ const Providers = () => {
 
     const handleRequestDetails = (request) => {
         localStorage.setItem('selectedRequestData', JSON.stringify(request));
-        navigate(`/providerRequestDetails`);
+        navigate(`/ProviderRequestDetails`);
     };
 
     const toggleDropdown = (e, itemId) => {

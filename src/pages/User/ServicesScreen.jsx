@@ -85,7 +85,7 @@ const ServicesScreen = ({ onServiceSelect }) => {
     const handleCategoryClick = (categoryTitle) => {
         setSelectedCategory(categoryTitle);
         setSearchTerm('');
-        fetchServices(categoryTitle); // use same logic as search to filter by title
+        fetchServices(categoryTitle); 
     };
 
     const handleClearFilters = () => {

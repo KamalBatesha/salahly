@@ -40,9 +40,9 @@ import BookingPopups from './pages/User/BookingPopups'
 
 
 function App() {
-  let {userRole,token}=useContext(UserContext)
-  console.log(userRole,token);
-  // let userRole = "admin";
+  // let {userRole,token}=useContext(UserContext)
+  // console.log(userRole,token);
+  let userRole = "admin";
   const userTypes = {
     admin: "admin",
     provider: "provider",
