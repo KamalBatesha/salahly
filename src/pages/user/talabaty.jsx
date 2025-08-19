@@ -8,6 +8,7 @@ import cardImg from "../../assets/card.png";
 import hammer from "../../assets/hammer.png";
 import filterIcon from "../../assets/filter-square.png";
 import service1Img from "../../assets/service1.png";
+import userImage from "../../assets/user-1.png";
 
 const TalabatyScreen = () => {
   const [orders, setOrders] = useState([]);
@@ -17,6 +18,10 @@ const TalabatyScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeTab, setActiveTab] = useState("talabaty");
   const [itemsPerPage, setItemsPerPage] = useState(9);
+
+      const { userInfo } = useContext(UserContext);
+      console.log(userInfo);
+      console.log("userInfo");
 
   const { token } = useContext(UserContext);
 
@@ -88,13 +93,13 @@ const statusMap = {
         <div className="flex justify-between items-start mb-6">
           <div className="flex items-center gap-3 ml-6">
             <img
-              src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150"
+              src={userInfo?.profilePic?.secure_url || userImage}
               alt="Profile"
               className="w-14 h-14 rounded-full object-cover shadow"
             />
             <div className="text-right">
-              <p className="text-lg font-semibold text-gray-800">احمد علي</p>
-              <p className="text-sm text-gray-500">محطة الظهران للكهرباء</p>
+              <p className="text-lg font-semibold text-gray-800">{userInfo?.name}</p>
+              <p className="text-sm text-gray-500">{userInfo?.address}</p>
             </div>
           </div>
 

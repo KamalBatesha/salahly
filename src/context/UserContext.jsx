@@ -5,10 +5,10 @@ import toast from "react-hot-toast";
 
 export let UserContext = createContext();
 export default function UserContextProvider(props) {
-  let [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo")));
+  let [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo"))||{});
   let [token, setToken] = useState(localStorage.getItem("access_token"));
-  let [userId, setUserId] = useState(getUserId);
-  let [userRole, setUserRole] = useState(getUserRole);
+let [userId, setUserId] = useState(() => getUserId());
+let [userRole, setUserRole] = useState(() => getUserRole());
   console.log(userRole);
   
 
@@ -27,7 +27,9 @@ export default function UserContextProvider(props) {
   
   function getUserRole() {
     if (localStorage.getItem("access_token")||localStorage.getItem("refresh_token")) {
-      let data = jwtDecode(localStorage.getItem("access_token")||localStorage.getItem("refresh_token"));
+      let data = jwtDecode(localStorage.getItem("access_token") || localStorage.getItem("refresh_token"));
+      console.log(data);
+      
       return data.role;
     } else {
       return null;
@@ -55,30 +57,50 @@ export default function UserContextProvider(props) {
     })
 
   }
-  async function refreshToken(){
-    console.log(`${userRole=="admin"?"admin":"bearer"} ${localStorage.getItem("refresh_token")}`);
-    
-    await axios.post('http://localhost:3000/auth/refreshToken',{},{headers:{'authorization': `${userRole=="admin"?"admin":"bearer"} ${localStorage.getItem("refresh_token")}`}}).then((res) => {
-      console.log(res.data);
-      localStorage.setItem("access_token", res.data.access_token);
-      setToken(res.data.access_token);
-      return res.data
-    }).catch((err) => {
-      console.log(err);
-    })
+async function refreshToken(){
+  try {
+    const res = await axios.post(
+      'http://localhost:3000/auth/refreshToken',
+      {},
+      { headers: { authorization: `${userRole=="admin"?"admin":"bearer"} ${localStorage.getItem("refresh_token")}` } }
+    );
+    localStorage.setItem("access_token", res.data.access_token);
+    setToken(res.data.access_token);
+    await getAllInfo();
+  } catch (err) {
+    console.log(err);
+    toast.error("جلسة العمل انتهت، سجل دخول مرة أخرى");
+  }
+}
+
+
+  async function getAllInfo() {
+    setUserRole(await getUserRole());
+      setUserInfo(async () => await getUserInfo());
+    setUserId(await getUserId());
+    await getUserId();
   }
 
-  useEffect(() => {
-    if (
-      token && getUserId()
-    ) {
-      setUserRole(getUserRole());
-      setUserInfo(getUserInfo());
-      setUserId(getUserId());
-    }else{
-      refreshToken();
+  function isTokenExpired(token) {
+  if (!token) return true;
+  let decoded = jwtDecode(token);
+  if (!decoded.exp) return true;
+  return decoded.exp * 1000 < Date.now();
+}
+
+
+useEffect(() => {
+  async function init() {
+    if (!token) return;
+
+    if (isTokenExpired(token)) {
+      await refreshToken();
     }
-  }, [token]);
+    await getAllInfo();
+  }
+  init();
+}, [token]);
+
   return (
     <UserContext.Provider
       value={{

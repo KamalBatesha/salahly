@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
-import chatImg from "../assets/chat-img.png";
+import chatImg from "../assets/chat-Img.png";
 
 const Messages = () => {
   const [selectedChat, setSelectedChat] = useState(null);
@@ -14,17 +14,27 @@ const Messages = () => {
   const myId = localStorage.getItem("userId");
   const token = localStorage.getItem("access_token");
 
-  // 🔌 connect to socket
+  // 🔌 socket connection (مره واحده بس)
   useEffect(() => {
     if (!token) return;
 
     socket.current = io("http://localhost:3000", {
       auth: {
-        authorization: `Bearer ${token}`, // ✅ الحل هنا
+        authorization: `Bearer ${token}`,
       },
     });
 
+    // لما استقبل رسالة من الطرف التاني
     socket.current.on("receiveMessage", ({ message }) => {
+      console.log(chatMessages,message);
+      
+      setChatMessages((prev) => [...prev, message]);
+    });
+
+    // لما السيرفر يرجع رسالتي
+    socket.current.on("messageSent", ({ message }) => {
+      console.log(chatMessages,message);
+      
       setChatMessages((prev) => [...prev, message]);
     });
 
@@ -42,9 +52,9 @@ const Messages = () => {
         const res = await axios.get("http://localhost:3000/chat", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log(res.data,"1111111111111111111111111111111111111111");
-        
         setMessages(res.data);
+        console.log(res.data);
+        
       } catch (error) {
         console.error("Error fetching chats:", error);
       }
@@ -69,12 +79,14 @@ const Messages = () => {
     if (messageText.trim() && selectedChat !== null) {
       const chat = messages[selectedChat];
       const destinationId =
-        chat.userId._id === myId ? chat.providerId._id : chat.userId._id;
+        chat.userId._id.toString() === myId.toString() ? chat.providerId._id : chat.userId._id;
 
+      // ✅ ابعت للسيرفر
       socket.current.emit("sendMessage", {
         destinationId,
         message: messageText,
       });
+
 
       setMessageText("");
     }
@@ -86,31 +98,6 @@ const Messages = () => {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [chatMessages]);
-
-  useEffect(() => {
-  if (!token) return;
-
-  socket.current = io("http://localhost:3000", {
-    auth: {
-      authorization: `Bearer ${token}`,
-    },
-  });
-
-  // لما استقبل رسالة من الطرف التاني
-  socket.current.on("receiveMessage", ({ message }) => {
-    setChatMessages((prev) => [...prev, message]);
-  });
-
-  // لما أنا أرسل رسالة
-  socket.current.on("messageSent", ({ message }) => {
-    setChatMessages((prev) => [...prev, message]);
-  });
-
-  return () => {
-    socket.current.disconnect();
-  };
-}, [token]);
-
 
   return (
     <div className="flex h-[calc(100vh-140px)]" dir="rtl">
@@ -173,33 +160,38 @@ const Messages = () => {
 
             {/* Messages Area */}
             <div className="flex-1 overflow-auto p-3 bg-white">
-              {chatMessages.map((msg, i) => (
-                <div
+              {chatMessages.map((msg, i) => {
+                // console.log(i, "---------", msg.senderId._id, myId);
+                console.log(chatMessages);
+                
+                
+                return (
+                  <div
                   key={i}
-                  className={`flex mb-3 ${
-                    msg.senderId === myId ? "justify-end" : "justify-start"
-                  }`}
+                  className={`flex mb-3 ${msg.senderId?.toString() === myId?.toString()
+                      ? "justify-end"
+                      : "justify-start"
+                    }`}
                 >
                   <div
-                    className={`p-3 rounded-lg max-w-[70%] ${
-                      msg.senderId === myId
+                    className={`p-3 rounded-lg max-w-[70%] ${msg.senderId?.toString() === myId?.toString()
                         ? "bg-main-500 text-white"
                         : "bg-gray-100"
-                    }`}
+                      }`}
                   >
-                    <div>{msg.content}</div>
+                      <div>{msg.content}</div>
                     <div
-                      className={`text-xs mt-1 ${
-                        msg.senderId === myId
+                      className={`text-xs mt-1 ${msg.senderId?.toString() === myId?.toString()
                           ? "text-white opacity-70"
                           : "text-gray-500"
-                      }`}
+                        }`}
                     >
                       {new Date(msg.createdAt).toLocaleTimeString("ar-EG")}
                     </div>
                   </div>
                 </div>
-              ))}
+                  )
+              })}
               <div ref={chatEndRef} />
             </div>
 
@@ -245,6 +237,7 @@ const Messages = () => {
 };
 
 export default Messages;
+
 
 
 

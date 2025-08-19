@@ -1,9 +1,24 @@
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { UserContext } from '../../context/UserContext';
+import userImage from '../../assets/user-1.png';
 
 
 const Navbar = () => {
+  const { userInfo ,token} = useContext(UserContext);
+  console.log(userInfo);
+  console.log("userInfo");
+  function handelLogout () {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userInfo');
+        localStorage.removeItem('userRole');
+        navigate('/login');
+    }
+  
+  
   const linkClasses = ({ isActive }) =>
     `transition-colors duration-200 ${isActive ? "text-[#00439D]" : "text-black"
     }`;
@@ -43,7 +58,21 @@ const Navbar = () => {
 
         {/* Actions */}
         <div className="flex items-center gap-4  space-x-reverse ">
-          <Link to="/join" className="hover:text-main-500 text-[#4B4B4B]">
+          {userInfo._id && token ? (
+            <>
+              <button
+                onClick={handelLogout}
+                className="bg-main-500 text-white px-4 py-3 rounded-xl hover:bg-blue-700"
+              >
+                تسجيل الخروج
+              </button>
+              <Link to="/Talabaty" className="hover:text-main-500 text-[#4B4B4B] bg-white p-1 rounded-full border ">
+                <img src={userInfo?.profilePic?.secure_url || userImage} className="w-10 h-10 rounded-full object-cover" alt="" />
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/join" className="hover:text-main-500 text-[#4B4B4B]">
             انضم كا صناعي
           </Link>
           <Link to="/login" className="hover:text-main-500 text-[#4B4B4B]">
@@ -55,6 +84,13 @@ const Navbar = () => {
           >
             انشاء حساب
           </Link>
+            </>
+          )
+          }
+
+
+
+
         </div>
       </nav>
     </div>

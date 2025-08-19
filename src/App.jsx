@@ -44,6 +44,7 @@ import { User } from "lucide-react";
 import BookingPopups from "./pages/User/BookingPopups";
 import ProviderProfileScreen from "./pages/user/provider_profile";
 import TalabatyScreen from "./pages/user/talabaty";
+import SettingsPanel from './pages/User/SettingsPanel';
 
 function App() {
   let {userRole,token}=useContext(UserContext)
@@ -287,7 +288,11 @@ function App() {
     // },
     // {
     //   path:"/settings",
-    //   element:<MyServices />
+    //   element:userRole==userTypes.provider?(
+    //     <ProviderLayout>
+    //       <SettingsPanel />
+    //     </ProviderLayout>
+    //   ):<Navigate to="/" replace />
     // },
     // {
     //   path: "/aboutUs",
@@ -336,7 +341,7 @@ function App() {
         ),
     },
     {
-      path: "/TalabatyScreen",
+      path: "/Talabaty",
       element:
         userRole == userTypes.user ? (
           <UserLayout>

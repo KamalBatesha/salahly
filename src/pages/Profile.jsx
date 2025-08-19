@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { ChevronLeft, LogOut } from "lucide-react";
+import { UserContext } from "../context/UserContext";
 
 const Profile = () => {
+      const { userInfo } = useContext(UserContext);
+      console.log(userInfo);
+      console.log("userInfo");
   const [showWithdrawPopup, setShowWithdrawPopup] = useState(false);
   const [selectedCard, setSelectedCard] = useState("card1");
   const [showAddCardForm, setShowAddCardForm] = useState(false);
@@ -212,12 +216,12 @@ const Profile = () => {
         {/* صورة + بيانات */}
         <div className="flex flex-col pr-6 items-start justify-center py-6 border-b border-[#fbfcfe]">
           <img
-            src="/images/avatar.jpg"
+            src={userInfo?.profilePic?.secure_url || "/images/avatar.jpg"}
             alt="User"
             className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-md"
           />
-          <h2 className="mt-2 text-xl font-bold text-gray-800">احمد علي</h2>
-          <p className="text-sm text-gray-500">محطة الرمل، الاسكندرية</p>
+          <h2 className="mt-2 text-xl font-bold text-gray-800">{userInfo?.name}</h2>
+          <p className="text-sm text-gray-500">{userInfo?.address}</p>
         </div>
 
         {/* الرصيد */}

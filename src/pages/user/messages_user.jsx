@@ -3,7 +3,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import chatImg from "../../assets/chat-Img.png";
 
-const Messages = () => {
+const Messages_user = () => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [messageText, setMessageText] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
@@ -26,11 +26,15 @@ const Messages = () => {
 
     // لما استقبل رسالة من الطرف التاني
     socket.current.on("receiveMessage", ({ message }) => {
+      console.log(chatMessages,message);
+      
       setChatMessages((prev) => [...prev, message]);
     });
 
     // لما السيرفر يرجع رسالتي
     socket.current.on("messageSent", ({ message }) => {
+      console.log(chatMessages,message);
+      
       setChatMessages((prev) => [...prev, message]);
     });
 
@@ -75,7 +79,7 @@ const Messages = () => {
     if (messageText.trim() && selectedChat !== null) {
       const chat = messages[selectedChat];
       const destinationId =
-        chat.userId._id === myId ? chat.providerId._id : chat.userId._id;
+        chat.userId._id.toString() === myId.toString() ? chat.providerId._id : chat.userId._id;
 
       // ✅ ابعت للسيرفر
       socket.current.emit("sendMessage", {
@@ -83,11 +87,6 @@ const Messages = () => {
         message: messageText,
       });
 
-      // ✅ ضيفها محلياً مؤقتاً (UI سريع)
-      setChatMessages((prev) => [
-        ...prev,
-        { content: messageText, senderId: myId, createdAt: new Date() },
-      ]);
 
       setMessageText("");
     }
@@ -161,35 +160,38 @@ const Messages = () => {
 
             {/* Messages Area */}
             <div className="flex-1 overflow-auto p-3 bg-white">
-              {chatMessages.map((msg, i) => (
-                <div
+              {chatMessages.map((msg, i) => {
+                // console.log(i, "---------", msg.senderId._id, myId);
+                console.log(chatMessages);
+                
+                
+                return (
+                  <div
                   key={i}
-                  className={`flex mb-3 ${
-                    msg.senderId?.toString() === myId?.toString()
+                  className={`flex mb-3 ${msg.senderId?.toString() === myId?.toString()
                       ? "justify-end"
                       : "justify-start"
-                  }`}
+                    }`}
                 >
                   <div
-                    className={`p-3 rounded-lg max-w-[70%] ${
-                      msg.senderId?.toString() === myId?.toString()
+                    className={`p-3 rounded-lg max-w-[70%] ${msg.senderId?.toString() === myId?.toString()
                         ? "bg-main-500 text-white"
                         : "bg-gray-100"
-                    }`}
+                      }`}
                   >
-                    <div>{msg.content}</div>
+                      <div>{msg.content}</div>
                     <div
-                      className={`text-xs mt-1 ${
-                        msg.senderId?.toString() === myId?.toString()
+                      className={`text-xs mt-1 ${msg.senderId?.toString() === myId?.toString()
                           ? "text-white opacity-70"
                           : "text-gray-500"
-                      }`}
+                        }`}
                     >
                       {new Date(msg.createdAt).toLocaleTimeString("ar-EG")}
                     </div>
                   </div>
                 </div>
-              ))}
+                  )
+              })}
               <div ref={chatEndRef} />
             </div>
 
@@ -234,7 +236,7 @@ const Messages = () => {
   );
 };
 
-export default Messages;
+export default Messages_user;
 
 
 

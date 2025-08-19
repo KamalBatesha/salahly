@@ -148,7 +148,7 @@ function SignUpDetails() {
     console.log(selectedImages2);
   };
 
-  const addWorkShop = async (file, token, role) => {
+  const addWorkShop = async (file, token) => {
     const formData = new FormData();
     formData.append("mainImage", file);
     await axios
