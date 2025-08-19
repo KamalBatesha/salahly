@@ -13,8 +13,11 @@ export default function UserContextProvider(props) {
   
 
   function getUserId() {
-    if (localStorage.getItem("access_token")||token) {
-      let data = jwtDecode(localStorage.getItem("access_token")||token);
+    if (token ||localStorage.getItem("access_token")) {
+      let data = jwtDecode(token || localStorage.getItem("access_token"));
+      if (data.id) {
+        localStorage.setItem("userId", data.id);
+      }
       return data.id;
     } else {
       return null;

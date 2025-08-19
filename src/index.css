@@ -14,3 +14,6 @@
   --color-main-200: #E6EDF7; /* lighter variant */
   --color-main-300: #C0D3EB; /* another lighter shade */
 }
+/* hide horizontal scrollbar cross-browser */
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.hide-scrollbar::-webkit-scrollbar { display: none; }
