@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import { UserContext } from '../context/UserContext';
 
 function Login() {
-  let {token,setToken}=useContext(UserContext);
+  let {token,setToken,getUserInfo}=useContext(UserContext);
   const navigate = useNavigate();
     let validationSchema = Yup.object().shape({
     email: Yup.string(),
@@ -25,6 +25,7 @@ function Login() {
         localStorage.setItem("refresh_token", res.data.refresh_token);
         localStorage.setItem("access_token", res.data.access_token);
         setToken(res.data.access_token);
+        getUserInfo();
         navigate('/');
       })
     }catch(err){

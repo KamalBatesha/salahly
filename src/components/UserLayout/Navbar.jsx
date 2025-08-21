@@ -1,11 +1,12 @@
 
 import React, { useContext } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import userImage from '../../assets/user-1.png';
 
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const { userInfo ,token} = useContext(UserContext);
   console.log(userInfo);
   console.log("userInfo");

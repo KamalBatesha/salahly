@@ -35,9 +35,10 @@ const TalabatyScreen = () => {
         });
 const statusMap = {
   pending: 'المعلقة',
-  accepted: 'المعاينة', // or 'التسليم' depending on your meaning
-  new: 'قيد التنفيذ`',
-  delivery: 'التسليم'
+  accepted: 'المعاينة',
+  canceled: 'ملغية',
+  confirmed: 'مؤكدة',
+  rejected: 'مرفوضة'
 };
         // Add defaults for missing data
         const ordersWithDefaults = response.data.map((order, i) => ({

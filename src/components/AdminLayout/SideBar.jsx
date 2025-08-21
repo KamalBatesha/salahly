@@ -34,6 +34,14 @@ export const Sidebar = ({ isOpen }) => {
         return location.pathname === path;
     };
 
+      function handelLogout () {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userInfo');
+        localStorage.removeItem('userRole');
+        navigate('/login');
+    }
 
     const renderMenuItems = (items) => (
         items.map((item) => {
@@ -41,7 +49,7 @@ export const Sidebar = ({ isOpen }) => {
             return (
                 <button
                     key={item.id}
-                    onClick={() => navigate(item.path)}
+                    onClick={item.id === 'logout' ? handelLogout : () => navigate(item.path)}
                     className={`w-full flex flex-row-reverse items-center gap-3 px-3 py-3 rounded-lg transition-colors text-sm
                     ${active ? 'bg-[#004AAD] text-white text-lg font-bold' : 'text-[#004AAD] hover:bg-gray-100 font-medium'}`}
 

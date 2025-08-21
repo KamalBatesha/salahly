@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Menu } from 'lucide-react';
+import { UserContext } from '../../context/UserContext';
 
 export const TopNav = ({ toggleSidebar, isSidebarOpen }) => {
+    const { userInfo } = useContext(UserContext);
     return (
         <nav className="bg-white shadow-sm border-b border-gray-200 px-6 py-4 flex items-center justify-between w-full">
         
@@ -16,11 +18,11 @@ export const TopNav = ({ toggleSidebar, isSidebarOpen }) => {
 
             <div className="flex items-center gap-3 ml-4">
                 <img
-                    src="/images/avatar.jpg"
+                    src={userInfo?.profilePic?.secure_url || "/images/avatar.jpg"}
                     alt="User Avatar"
                     className="w-10 h-10 rounded-full object-cover"
                 />
-                <span className="text-sm font-bold text-gray-800">محمد علي</span>
+                <span className="text-sm font-bold text-gray-800">{userInfo?.name}</span>
             </div>
         </nav>
     );

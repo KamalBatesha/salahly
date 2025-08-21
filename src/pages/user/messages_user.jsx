@@ -2,12 +2,17 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import chatImg from "../../assets/chat-Img.png";
+import toast from "react-hot-toast";
 
 const Messages_user = () => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [messageText, setMessageText] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [orderId, setOrderId] = useState(null);
+  const [orderData, setOrderData] = useState({});
+  const [openNewOrderDetails, setOpenNewOrderDetails] = useState(false);
+  
   const chatEndRef = useRef(null);
   const socket = useRef(null);
 
@@ -42,6 +47,53 @@ const Messages_user = () => {
       socket.current.disconnect();
     };
   }, [token]);
+    async function handelNewOffer(method) {
+    if (method == "add") {
+      
+      axios.get(`http://localhost:3000/provider/getSpecificOrder/${orderId}`, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
+        setOrderData(res.data);
+        // setOpenNewOrder(true);
+        setOpenNewOrderDetails(false);
+        console.log(res.data);
+        
+      })
+    }else if (method == "get") {
+      axios.get(`http://localhost:3000/provider/getSpecificOrder/${orderId}`, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
+        setOrderData(res.data);
+        // setOpenNewOrder(false);
+        setOpenNewOrderDetails(true);
+        console.log(res.data);
+      })
+    }
+  }
+
+    function handelStatus(status) {
+    axios
+      .post(`http://localhost:3000/user/confirmOrderOrCancel/${orderId}`, { status: status?"confirmed":"canceled" }, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        console.log(res.data);
+        status?
+        toast.success("تم تاكيد الطلب"):
+        toast.success("تم الغاء الطلب");
+        // setOpenNewOrder(false);
+        setOpenNewOrderDetails(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log(err.response.data.message);
+        if(err.response.data.message=="jwt expired"){
+          refreshToken();
+        } else {
+          console.log(err);
+          
+          toast.error("حدث خطاء");
+          // setOpenNewOrder(false);
+        setOpenNewOrderDetails(false);
+        }
+      })
+  }
 
   // 📥 get my chats
   useEffect(() => {
@@ -69,6 +121,9 @@ const Messages_user = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setChatMessages(res.data.messages || []);
+      setOrderId(res.data.orderId);
+      console.log(res.data.orderId);
+      
     } catch (error) {
       console.error("Error fetching chat:", error);
     }
@@ -161,29 +216,27 @@ const Messages_user = () => {
             {/* Messages Area */}
             <div className="flex-1 overflow-auto p-3 bg-white">
               {chatMessages.map((msg, i) => {
-                // console.log(i, "---------", msg.senderId._id, myId);
-                console.log(chatMessages);
-                
-                
-                return (
-                  <div
-                  key={i}
+                if (msg.content !== "newOrderDatails") {
+                  
+                  return (
+                    <div
+                    key={i}
                   className={`flex mb-3 ${msg.senderId?.toString() === myId?.toString()
-                      ? "justify-end"
+                    ? "justify-end"
                       : "justify-start"
                     }`}
                 >
                   <div
                     className={`p-3 rounded-lg max-w-[70%] ${msg.senderId?.toString() === myId?.toString()
-                        ? "bg-main-500 text-white"
+                      ? "bg-main-500 text-white"
                         : "bg-gray-100"
                       }`}
                   >
                       <div>{msg.content}</div>
                     <div
                       className={`text-xs mt-1 ${msg.senderId?.toString() === myId?.toString()
-                          ? "text-white opacity-70"
-                          : "text-gray-500"
+                        ? "text-white opacity-70"
+                        : "text-gray-500"
                         }`}
                     >
                       {new Date(msg.createdAt).toLocaleTimeString("ar-EG")}
@@ -191,7 +244,36 @@ const Messages_user = () => {
                   </div>
                 </div>
                   )
-              })}
+                } else {
+                  return (
+                    <div
+                    key={i}
+                  className={`flex mb-3 ${msg.senderId?.toString() === myId?.toString()
+                    ? "justify-end"
+                      : "justify-start"
+                    }`}
+                >
+                  <div
+                    className={`p-3 rounded-lg max-w-[70%] ${msg.senderId?.toString() === myId?.toString()
+                      ? "bg-main-500 text-white"
+                        : "bg-gray-100"
+                      }`}
+                  >
+                      <div>تفاصيل اتفاقيه جديده <button onClick={() => handelNewOffer("get")} className="px-3 py-1 border border-main-500 text-main-500 rounded text-sm hover:bg-white hover:text-black transition-colors">تفاصيل</button></div>
+                    <div
+                      className={`text-xs mt-1 ${msg.senderId?.toString() === myId?.toString()
+                        ? "text-white opacity-70"
+                        : "text-gray-500"
+                        }`}
+                    >
+                      {new Date(msg.createdAt).toLocaleTimeString("ar-EG")}
+                    </div>
+                  </div>
+                </div>
+                  )
+                  
+                }
+                })}
               <div ref={chatEndRef} />
             </div>
 
@@ -232,6 +314,36 @@ const Messages_user = () => {
           </div>
         )}
       </div>
+      {openNewOrderDetails && (
+
+       <div className="absolute h-screen w-screen  bg-black/10 top-0 right-0">
+          
+        <div className={`absolute w-1/2 min-h-1/2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl p-4`}>
+          <div className="flex">
+            <button onClick={() => setOpenNewOrderDetails(false)} className="bg-main-500 cursor-pointer  text-white p-2 rounded-full flex items-center justify-center aspect-square">{"<"}</button>
+              <h1 className="font-bold text-gray-900 text-2xl mr-4">تفاصيل اتفاقيه جديده</h1>
+              </div>
+
+            <p className="text-gray-900 mb-3">{orderData?.serviceId?.title}</p>
+          <img src={orderData?.serviceId?.mainImage?.secure_url} alt="service image" className="w-full rounded-md object-cover object-center h-40" />
+          <div className="mt-4">
+            <p>السعر النهائي : {orderData?.price}</p>
+            <p>تفاصيل المشكله</p>
+            <p className="p-2">{orderData?.description}</p>
+            <p>معاد الخدمة : {new Date(orderData?.deliveryDate).toLocaleDateString()}</p>
+            
+            </div>
+            
+            <div className="flex gap-5 mt-5">
+              <button onClick={() => handelStatus(true)} className="bg-main-500 cursor-pointer  text-white p-2 flex-1 rounded-md">تاكيد</button>
+              <button onClick={() => handelStatus(false)} className="bg-red-500 cursor-pointer  text-white p-2 flex-1 rounded-md">الغاء</button>
+            </div>
+        
+          </div>
+      </div>
+      )
+      }
+      
     </div>
   );
 };

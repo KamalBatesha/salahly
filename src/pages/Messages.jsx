@@ -1,18 +1,31 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import chatImg from "../assets/chat-Img.png";
+import { UserContext } from "../context/UserContext";
+import toast from "react-hot-toast";
 
 const Messages = () => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [messageText, setMessageText] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [orderId, setOrderId] = useState(null);
+  const [orderData, setOrderData] = useState({});
+  const [openNewOrder, setOpenNewOrder] = useState(false);
+  const [openNewOrderDetails, setOpenNewOrderDetails] = useState(false);
   const chatEndRef = useRef(null);
   const socket = useRef(null);
+  const {token} =useContext(UserContext);
+
+  console.log(selectedChat);
+  console.log(chatMessages);
+  console.log("selectedChat");
+  
+  
 
   const myId = localStorage.getItem("userId");
-  const token = localStorage.getItem("access_token");
+  // const token = localStorage.getItem("access_token");
 
   // 🔌 socket connection (مره واحده بس)
   useEffect(() => {
@@ -43,6 +56,26 @@ const Messages = () => {
     };
   }, [token]);
 
+  async function handelNewOffer(method) {
+    if (method == "add") {
+      
+      axios.get(`http://localhost:3000/provider/getSpecificOrder/${orderId}`, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
+        setOrderData(res.data);
+        setOpenNewOrder(true);
+        setOpenNewOrderDetails(false);
+        console.log(res.data);
+        
+      })
+    }else if (method == "get") {
+      axios.get(`http://localhost:3000/provider/getSpecificOrder/${orderId}`, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
+        setOrderData(res.data);
+        setOpenNewOrder(false);
+        setOpenNewOrderDetails(true);
+        console.log(res.data);
+      })
+    }
+  }
+
   // 📥 get my chats
   useEffect(() => {
     if (!token) return;
@@ -54,6 +87,7 @@ const Messages = () => {
         });
         setMessages(res.data);
         console.log(res.data);
+        console.log("------------------------------------");
         
       } catch (error) {
         console.error("Error fetching chats:", error);
@@ -69,6 +103,7 @@ const Messages = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setChatMessages(res.data.messages || []);
+      setOrderId(res.data.orderId);
     } catch (error) {
       console.error("Error fetching chat:", error);
     }
@@ -91,6 +126,73 @@ const Messages = () => {
       setMessageText("");
     }
   };
+
+  function handleSubmitOrder(e) {
+    e.preventDefault();
+    console.log(e.target[0].value);
+    let value = e.target[0].value;
+    if (isNaN(value)) {
+      toast.error("يرجى ادخال ارقام فقط");
+      return;
+    }
+    axios.post(`http://localhost:3000/provider/orderDatails/${orderId}`, {price:value}, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
+      console.log(res.data);
+      setOpenNewOrder(false);
+      const chat = messages[selectedChat];
+      const destinationId =
+        chat.userId._id.toString() === myId.toString() ? chat.providerId._id : chat.userId._id;
+
+      // ✅ ابعت للسيرفر
+      socket.current.emit("sendMessage", {
+        destinationId,
+        message: "newOrderDatails",
+      });
+
+    }).catch((err) => {
+      console.log(err);
+      console.log(err.response.data.message);
+      if(err.response.data.message=="jwt expired"){
+        refreshToken();
+      }else{
+        toast.error("حدث خطاء");
+      }
+    })
+
+    
+    // axios
+    //   .post("http://localhost:3000/order/add", orderData, {
+    //     headers: { Authorization: `Bearer ${token}` },
+    //   })
+    //   .then((res) => {
+    //     console.log(res.data);
+    //     setOpenNewOrder(false);
+    //   })
+  }
+
+  function handelStatus(status) {
+    axios
+      .post(`http://localhost:3000/user/confirmOrderOrCancel/${orderId}`, { status: status?"confirmed":"canceled" }, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setOpenNewOrder(false);
+        setOpenNewOrderDetails(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log(err.response.data.message);
+        if(err.response.data.message=="jwt expired"){
+          refreshToken();
+        } else {
+          console.log(err);
+          
+          toast.error("حدث خطاء");
+          setOpenNewOrder(false);
+        setOpenNewOrderDetails(false);
+        }
+      })
+  }
 
   // 🔽 auto scroll
   useEffect(() => {
@@ -161,29 +263,27 @@ const Messages = () => {
             {/* Messages Area */}
             <div className="flex-1 overflow-auto p-3 bg-white">
               {chatMessages.map((msg, i) => {
-                // console.log(i, "---------", msg.senderId._id, myId);
-                console.log(chatMessages);
-                
-                
-                return (
-                  <div
-                  key={i}
+                if (msg.content !== "newOrderDatails") {
+                  
+                  return (
+                    <div
+                    key={i}
                   className={`flex mb-3 ${msg.senderId?.toString() === myId?.toString()
-                      ? "justify-end"
+                    ? "justify-end"
                       : "justify-start"
                     }`}
                 >
                   <div
                     className={`p-3 rounded-lg max-w-[70%] ${msg.senderId?.toString() === myId?.toString()
-                        ? "bg-main-500 text-white"
+                      ? "bg-main-500 text-white"
                         : "bg-gray-100"
                       }`}
                   >
                       <div>{msg.content}</div>
                     <div
                       className={`text-xs mt-1 ${msg.senderId?.toString() === myId?.toString()
-                          ? "text-white opacity-70"
-                          : "text-gray-500"
+                        ? "text-white opacity-70"
+                        : "text-gray-500"
                         }`}
                     >
                       {new Date(msg.createdAt).toLocaleTimeString("ar-EG")}
@@ -191,13 +291,49 @@ const Messages = () => {
                   </div>
                 </div>
                   )
-              })}
+                } else {
+                  return (
+                    <div
+                    key={i}
+                  className={`flex mb-3 ${msg.senderId?.toString() === myId?.toString()
+                    ? "justify-end"
+                      : "justify-start"
+                    }`}
+                >
+                  <div
+                    className={`p-3 rounded-lg max-w-[70%] ${msg.senderId?.toString() === myId?.toString()
+                      ? "bg-main-500 text-white"
+                        : "bg-gray-100"
+                      }`}
+                  >
+                      <div>تفاصيل اتفاقيه جديده <button onClick={() => handelNewOffer("get")} className="px-3 py-1 border border-white text-white rounded text-sm hover:bg-white hover:text-main-500 transition-colors">تفاصيل</button></div>
+                    <div
+                      className={`text-xs mt-1 ${msg.senderId?.toString() === myId?.toString()
+                        ? "text-white opacity-70"
+                        : "text-gray-500"
+                        }`}
+                    >
+                      {new Date(msg.createdAt).toLocaleTimeString("ar-EG")}
+                    </div>
+                  </div>
+                </div>
+                  )
+                  
+                }
+                })}
               <div ref={chatEndRef} />
             </div>
 
             {/* Input Area */}
             <div className="p-3 border-t border-gray-200 bg-white min-h-[90px]">
               <div className="flex items-end w-full gap-3">
+                <div className="flex flex-col items-center justify-center ml-2">
+
+                  <button
+                    onClick={()=>handelNewOffer("add")}
+                    className="p-2 bg-main-500 text-white rounded-full aspect-square flex items-center justify-center cursor-pointer">+</button>
+                  <p>عرض جديد</p>
+                </div>
                 <input
                   type="text"
                   placeholder="اكتب رساله"
@@ -232,6 +368,101 @@ const Messages = () => {
           </div>
         )}
       </div>
+      {openNewOrder && (
+
+       <div className="absolute h-screen w-screen  bg-black/10 top-0 right-0">
+          
+        <div className={`absolute w-1/2 min-h-1/2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl p-4`}>
+          <div className="flex">
+            <button onClick={() => setOpenNewOrder(false)} className="bg-main-500 cursor-pointer  text-white p-2 rounded-full flex items-center justify-center aspect-square">{"<"}</button>
+              <h1 className="font-bold text-gray-900 text-2xl mr-4">تفاصيل اتفاقيه جديده</h1>
+              </div>
+              <div className="flex justify-between mt-5">
+                <div className="flex-col w-1/2 p-4 border rounded-md">
+                <img src={orderData?.serviceId?.mainImage?.secure_url} alt="service image" className="w-full rounded-md object-cover" />
+                <div className="flex items-center mt-2">
+                  <img src={orderData?.providerId?.profilePic?.secure_url || chatImg} alt="provider image" className="w-10 h-10 rounded-full object-cover mr-2" />
+                  <div className="flex flex-col mr-2">
+
+                    <span className=" text-gray-900">{orderData?.providerId?.name}</span>
+                    <span className="text-gray-500 text-sm">{orderData?.serviceId?.title}</span>
+                  </div>
+                <p className="align-self-end text-left">{"م ج"+"("+orderData?.serviceId?.minPrice +"-"+orderData?.serviceId?.maxPrice+")" }</p>
+                </div>
+              </div>
+              <div className="flex-col w-1/2 pr-5">
+                <p>تفاصيل العميل</p>
+                <div className="flex items-center">
+                  <img src={orderData?.userId?.profilePic?.secure_url || chatImg} alt="userId image" className="w-10 h-10 rounded-full object-cover mr-2" />
+                  <div className="flex flex-col mr-2">
+                    <span className=" text-gray-900">{orderData?.userId?.name}</span>
+                    <span className="text-gray-500 text-sm">{orderData?.userId?.address}</span>
+                    <span className="text-gray-500 text-sm">{orderData?.userId?.phone}</span>
+                  </div>
+                </div>
+                <div className="date-details">
+                  <p className="mt-2">التاريخ: {new Date(orderData?.deliveryDate).toLocaleDateString()}</p>
+                  
+                </div>
+              </div>
+            </div>
+            <div className="mt-6">
+              <p>تفاصيل المشكله</p>
+            <div className="flex">
+              {orderData?.image?.secure_url &&
+              <img src={orderData?.image?.secure_url} alt="" className="flex-1 rounded-md max-w-1/2" />
+            }
+
+              <p className="flex-1 p-2">{orderData?.description}</p>
+            </div>
+            </div>
+            <div className="">
+              <p>التكلفه النهائيه</p>
+              <form className="flex gap-2" onSubmit={(e) => {handleSubmitOrder(e)}}>
+                <input type="text" className="flex-1 p-2 border rounded-md" defaultValue={orderData?.minPrice} placeholder="التكلفه النهائيه" />
+                <button type="submit" className="bg-main-500 cursor-pointer  text-white p-2 flex-1 rounded-md">ارسال</button>
+              </form>
+            </div>
+          </div>
+        
+      </div>
+      )
+      }
+
+      {openNewOrderDetails && (
+
+       <div className="absolute h-screen w-screen  bg-black/10 top-0 right-0">
+          
+        <div className={`absolute w-1/2 min-h-1/2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl p-4`}>
+          <div className="flex">
+            <button onClick={() => setOpenNewOrderDetails(false)} className="bg-main-500 cursor-pointer  text-white p-2 rounded-full flex items-center justify-center aspect-square">{"<"}</button>
+              <h1 className="font-bold text-gray-900 text-2xl mr-4">تفاصيل اتفاقيه جديده</h1>
+              </div>
+
+            <p className="text-gray-900 mb-3">{orderData?.serviceId?.title}</p>
+          <img src={orderData?.serviceId?.mainImage?.secure_url} alt="service image" className="w-full rounded-md object-cover object-center h-40" />
+          <div className="mt-4">
+            <p>السعر النهائي : {orderData?.price}</p>
+            <p>تفاصيل المشكله</p>
+            <p className="p-2">{orderData?.description}</p>
+            <p>معاد الخدمة : {new Date(orderData?.deliveryDate).toLocaleDateString()}</p>
+            
+            </div>
+            
+            <div className="flex gap-5 mt-5">
+              <button onClick={() => handelStatus(true)} className="bg-main-500 cursor-pointer  text-white p-2 flex-1 rounded-md">تاكيد</button>
+              <button onClick={() => handelStatus(false)} className="bg-red-500 cursor-pointer  text-white p-2 flex-1 rounded-md">الغاء</button>
+            </div>
+        
+          </div>
+      </div>
+      )
+      }
+      
+      
+      
+      
+      
     </div>
   );
 };

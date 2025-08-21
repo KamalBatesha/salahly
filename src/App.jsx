@@ -108,13 +108,11 @@ function App() {
           <ProviderLayout>
             <ProviderDashBoard />
           </ProviderLayout>
-        ) : userRole == userTypes.user ? (
+        ) : (
           <UserLayout>
             <UserHome />
           </UserLayout>
-        ) : (
-          <div>Unauthorized</div>
-        ),
+        )
     },
     // {
     //   path: "/adminDashboard",

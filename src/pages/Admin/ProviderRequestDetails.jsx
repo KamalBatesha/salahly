@@ -58,7 +58,7 @@ const ProviderRequestDetails = () => {
                 idBack: request.identityPic && request.identityPic[1] ? request.identityPic[1].secure_url : '/images/back-id.png',
                 portfolio: request.portfolio || [],
                 workingHours: request.workingHours || getDefaultWorkingHours(),
-                services: provider.workshops || [],
+                services: request.workshops || [], // Fixed: was using undefined 'provider' variable
             };
 
             setRequestData(mappedRequest);
@@ -102,7 +102,6 @@ const ProviderRequestDetails = () => {
                     }
                 });
 
-
                 if (response.ok) {
                     const result = await response.json();
                     console.log('Provider accepted successfully:', result);
@@ -132,7 +131,6 @@ const ProviderRequestDetails = () => {
             }
         }
     };
-
 
     const handleReject = async () => {
         if (requestData) {

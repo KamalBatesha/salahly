@@ -36,7 +36,8 @@ let [userRole, setUserRole] = useState(() => getUserRole());
     }
   }
 
-  async function getUserInfo(){
+  async function getUserInfo() {
+    if(!token) return null; 
     console.log(userRole,token);
     console.log(`${userRole=="admin"?"admin":"bearer"} ${token}`);
     

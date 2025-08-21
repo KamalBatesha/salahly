@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Search , ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 const Providers = () => {
     const [openDropdown, setOpenDropdown] = useState(null);
@@ -163,7 +162,7 @@ const Providers = () => {
 
     const handleRequestDetails = (request) => {
         localStorage.setItem('selectedRequestData', JSON.stringify(request));
-        navigate(`/providerRequestDetails`);
+        navigate(`/ProviderRequestDetails`);
     };
 
     const toggleDropdown = (e, itemId) => {
@@ -297,7 +296,7 @@ const Providers = () => {
                             : 'text-[#B0B0B0] font-semibold hover:text-gray-700 bg-white shadow-inner'
                             }`}
                     >
-                        المسجلين ({providers.length})
+                        المسجلين
                     </button>
                     <button
                         onClick={() => setActiveTab('requests')}
@@ -306,7 +305,7 @@ const Providers = () => {
                             : 'text-[#B0B0B0] font-semibold hover:text-gray-700 bg-white shadow-inner'
                             }`}
                     >
-                        طلبات انضمام ({joinRequests.length})
+                        طلبات انضمام
                     </button>
                 </div>
 

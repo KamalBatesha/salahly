@@ -24,9 +24,11 @@ function SignUpDetails() {
   const idBackRef = useRef(null);
 
   const nextStep = async () => {
-    if (step === 1) {
-      if (categoryRef.current.value && aboutRef.current.value) {
-        if (aboutRef.current.value.length < 15) {
+    try {
+      
+      if (step === 1) {
+        if (categoryRef.current.value && aboutRef.current.value) {
+          if (aboutRef.current.value.length < 15) {
           toast.error("يجب كتابة الوصف اطول من 15 حرف");
           return;
         }
@@ -60,7 +62,7 @@ function SignUpDetails() {
       formData.append("address", pastData.address);
       formData.append("role", pastData.role);
       formData.append("profession", data.profession);
-
+      
       if (data.about && data.about.length >= 15) {
         formData.append("aboutMe", data.about);
       } else {
@@ -72,7 +74,7 @@ function SignUpDetails() {
       if (selectedImages2.profilePic?.[0]?.file) {
         formData.append("profilePic", selectedImages2.profilePic[0].file);
       }
-
+      
       // صور الهوية: يجب إرسالها كمصفوفة بنفس الاسم
       selectedImages2.identityPic?.forEach((img) => {
         formData.append("identityPic", img.file);
@@ -88,7 +90,7 @@ function SignUpDetails() {
       selectedImages.forEach(async (image) => {
         await addWorkShop(image.file, token, pastData.role);
       });
-
+      
       setLoader(false);
       toast.success(
         "تم انشاء الحساب بنجاح اذهب لتفعيل الحساب من البريد الالكتروني",
@@ -98,6 +100,12 @@ function SignUpDetails() {
       );
       localStorage.removeItem("userSignUpData");
       navigate("/login");
+    }
+  } catch (error) {
+      console.error(error);
+      console.error(error.response.data);
+      toast.error(error.response.data.message);
+      setLoader(false);
     }
   };
 

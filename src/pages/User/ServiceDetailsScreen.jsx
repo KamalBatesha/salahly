@@ -1,11 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { FaStar } from 'react-icons/fa';
 import { ChevronLeft, ChevronRight, X, Camera } from 'lucide-react';
 import ServiceDetailsCard from '../../components/serviceDetailsCard';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+import { UserContext } from '../../context/UserContext';
+import toast from 'react-hot-toast';
 
 const ServiceDetailsScreen = ({ onBackToServices }) => {
+    const form = new FormData();
      const navigate = useNavigate();
     const { serviceId } = useParams();
     const [showBookingModal, setShowBookingModal] = useState(false);
@@ -21,6 +25,7 @@ const ServiceDetailsScreen = ({ onBackToServices }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const fileInputRef = useRef(null);
+    const {token} =useContext(UserContext);
 
     const [isBookmarked, setIsBookmarked] = useState(false);
 
@@ -171,22 +176,54 @@ const ServiceDetailsScreen = ({ onBackToServices }) => {
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
+        console.log(file);
+        form.append('image', file);
+        
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 setSelectedImage(e.target.result);
+                console.log(e.target.result);
+                
             };
             reader.readAsDataURL(file);
         }
     };
 
-    const handleShareSubmit = () => {
-        console.log('Sharing service:', { text: shareText, image: selectedImage });
-        alert('تم الحجز بنجاح!');
-        setShowShareModal(false);
-        setSelectedImage(null);
-        setShareText('');
-    };
+    const handleShareSubmit = async() => {
+
+    if (fileInputRef.current?.files[0]) {
+        form.append('image', fileInputRef.current.files[0]); // send actual File
+    }
+
+    form.append('description', shareText);
+    form.append('serviceId', serviceId);
+        form.append('deliveryDate', new Date(Date.now() + 3600000 * 24 * 3).toISOString());
+        console.log(form);
+        
+
+    axios.post('http://localhost:3000/user/order', form, { 
+        headers: { 
+            Authorization: `Bearer ${token}`, 
+            "Content-Type": "multipart/form-data" 
+        } 
+    })
+    .then((res) => {
+        console.log(res.data);
+        // alert('تم الحجز بنجاح!');
+        toast.success("تم الحجز بنجاح!");
+    })
+    .catch(err => {
+        console.error("Error submitting order:", err.response?.data || err.message);
+        // alert("حدث خطأ أثناء الحجز");
+        toast.error("حدث خطاء");
+    });
+
+    setShowShareModal(false);
+    setSelectedImage(null);
+    setShareText('');
+};
+
 
     if (loading) {
         return (
